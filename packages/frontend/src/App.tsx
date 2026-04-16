@@ -125,8 +125,14 @@ export default function App() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [appSettings]);
 
-  // Load theme when selection changes
+  // Load theme when user changes theme selection (skip the initial mount —
+  // theme is already fetched inside init() with the token already set)
+  const isInitialThemeMount = useRef(true);
   useEffect(() => {
+    if (isInitialThemeMount.current) {
+      isInitialThemeMount.current = false;
+      return;
+    }
     getTheme(themeName).then(setTheme).catch(console.error);
   }, [themeName]);
 
