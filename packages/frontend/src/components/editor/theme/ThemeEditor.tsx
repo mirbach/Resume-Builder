@@ -163,6 +163,7 @@ export default function ThemeEditor({ currentTheme, onThemeChange, onClose }: Pr
           {/* Theme selector */}
           <div className="flex items-center gap-3">
             <select
+              aria-label="Select theme"
               value={selectedTheme}
               onChange={(e) => setSelectedTheme(e.target.value)}
               className={inputClasses + ' max-w-xs'}
@@ -171,11 +172,11 @@ export default function ThemeEditor({ currentTheme, onThemeChange, onClose }: Pr
                 <option key={t.filename} value={t.filename}>{t.name}</option>
               ))}
             </select>
-            <button onClick={() => setShowCreate(true)} className="text-blue-600 hover:text-blue-700">
+            <button aria-label="Create new theme" onClick={() => setShowCreate(true)} className="text-blue-600 hover:text-blue-700">
               <Plus size={18} />
             </button>
             {selectedTheme !== 'default' && (
-              <button onClick={handleDelete} className="text-red-400 hover:text-red-600">
+              <button aria-label="Delete theme" onClick={handleDelete} className="text-red-400 hover:text-red-600">
                 <Trash2 size={18} />
               </button>
             )}
@@ -239,6 +240,7 @@ export default function ThemeEditor({ currentTheme, onThemeChange, onClose }: Pr
                     ref={logoInputRef}
                     type="file"
                     accept="image/*"
+                    aria-label="Upload company logo"
                     className="hidden"
                     onChange={handleLogoUpload}
                   />
@@ -278,20 +280,20 @@ export default function ThemeEditor({ currentTheme, onThemeChange, onClose }: Pr
             <legend className="text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">Fonts</legend>
             <div className="grid grid-cols-3 gap-3">
               <div>
-                <label className="block text-xs text-gray-500 dark:text-gray-400">Heading</label>
-                <select className={inputClasses} value={theme.fonts.heading} onChange={(e) => updateFonts({ heading: e.target.value })}>
+                <label htmlFor="font-heading" className="block text-xs text-gray-500 dark:text-gray-400">Heading</label>
+                <select id="font-heading" className={inputClasses} value={theme.fonts.heading} onChange={(e) => updateFonts({ heading: e.target.value })}>
                   {AVAILABLE_FONTS.map((f) => <option key={f.value} value={f.value}>{f.label}</option>)}
                 </select>
               </div>
               <div>
-                <label className="block text-xs text-gray-500 dark:text-gray-400">Body</label>
-                <select className={inputClasses} value={theme.fonts.body} onChange={(e) => updateFonts({ body: e.target.value })}>
+                <label htmlFor="font-body" className="block text-xs text-gray-500 dark:text-gray-400">Body</label>
+                <select id="font-body" className={inputClasses} value={theme.fonts.body} onChange={(e) => updateFonts({ body: e.target.value })}>
                   {AVAILABLE_FONTS.map((f) => <option key={f.value} value={f.value}>{f.label}</option>)}
                 </select>
               </div>
               <div>
-                <label className="block text-xs text-gray-500 dark:text-gray-400">Size</label>
-                <select className={inputClasses} value={theme.fonts.size} onChange={(e) => updateFonts({ size: e.target.value as ThemeFonts['size'] })}>
+                <label htmlFor="font-size" className="block text-xs text-gray-500 dark:text-gray-400">Size</label>
+                <select id="font-size" className={inputClasses} value={theme.fonts.size} onChange={(e) => updateFonts({ size: e.target.value as ThemeFonts['size'] })}>
                   <option value="small">Small</option>
                   <option value="medium">Medium</option>
                   <option value="large">Large</option>
@@ -305,16 +307,16 @@ export default function ThemeEditor({ currentTheme, onThemeChange, onClose }: Pr
             <legend className="text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">Layout</legend>
             <div className="grid grid-cols-3 gap-3 mb-3">
               <div>
-                <label className="block text-xs text-gray-500 dark:text-gray-400">Style</label>
-                <select className={inputClasses} value={theme.layout.style} onChange={(e) => updateLayout({ style: e.target.value as LayoutStyle })}>
+                <label htmlFor="layout-style" className="block text-xs text-gray-500 dark:text-gray-400">Style</label>
+                <select id="layout-style" className={inputClasses} value={theme.layout.style} onChange={(e) => updateLayout({ style: e.target.value as LayoutStyle })}>
                   <option value="single-column">Single Column</option>
                   <option value="two-column">Two Column</option>
                   <option value="sidebar">Sidebar</option>
                 </select>
               </div>
               <div>
-                <label className="block text-xs text-gray-500 dark:text-gray-400">Header</label>
-                <select className={inputClasses} value={theme.layout.headerStyle} onChange={(e) => updateLayout({ headerStyle: e.target.value as HeaderStyle })}>
+                <label htmlFor="layout-header" className="block text-xs text-gray-500 dark:text-gray-400">Header</label>
+                <select id="layout-header" className={inputClasses} value={theme.layout.headerStyle} onChange={(e) => updateLayout({ headerStyle: e.target.value as HeaderStyle })}>
                   <option value="full-width">Full Width</option>
                   <option value="compact">Compact</option>
                   <option value="centered">Centered</option>
@@ -338,8 +340,9 @@ export default function ThemeEditor({ currentTheme, onThemeChange, onClose }: Pr
             <div className="grid grid-cols-4 gap-3">
               {(['top', 'right', 'bottom', 'left'] as const).map((side) => (
                 <div key={side}>
-                  <label className="block text-xs text-gray-500 dark:text-gray-400 capitalize">{side}</label>
+                  <label htmlFor={`margin-${side}`} className="block text-xs text-gray-500 dark:text-gray-400 capitalize">{side}</label>
                   <input
+                    id={`margin-${side}`}
                     type="number"
                     className={inputClasses}
                     value={theme.layout.pageMargins[side]}
