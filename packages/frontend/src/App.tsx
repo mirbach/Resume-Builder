@@ -36,16 +36,24 @@ export default function App() {
   useEffect(() => {
     async function init() {
       try {
-        const [resume, settings] = await Promise.all([
-          getResume(),
-          getSettings().catch(() => null),
-        ]);
-        setResumeData(resume);
+        // Restore any stored token BEFORE making API calls so auth headers are present
+        const storedToken = getStoredToken();
+        if (storedToken) setAuthToken(storedToken);
+
+        // Always load settings first (settings endpoint is public)
+        const settings = await getSettings().catch(() => null);
         setAppSettings(settings);
 
-        // Restore stored token
-        const token = getStoredToken();
-        if (token) setAuthToken(token);
+        // If this is an OAuth callback (?code= present), skip the data fetch —
+        // the OAuth callback effect will exchange the code, then load data.
+        const params = new URLSearchParams(window.location.search);
+        if (params.has('code')) {
+          setLoading(false);
+          return;
+        }
+
+        const resume = await getResume();
+        setResumeData(resume);
 
         let themeData: ResumeTheme | null = null;
         try {
@@ -53,7 +61,7 @@ export default function App() {
           setThemeName('default');
         } catch {
           const list = await getThemes();
-          if (list.length === 0) throw new Error('No themes found. Please restart the server.');
+          if (list.length === 0) throw new Error('No themes found.');
           themeData = await getTheme(list[0].filename);
           setThemeName(list[0].filename);
         }
@@ -66,6 +74,24 @@ export default function App() {
     }
     init();
   }, []);
+
+  // Load resume + theme data (used after OAuth exchange)
+  async function loadResumeData() {
+    const resume = await getResume();
+    setResumeData(resume);
+    let themeData: ResumeTheme | null = null;
+    try {
+      themeData = await getTheme('default');
+      setThemeName('default');
+    } catch {
+      const list = await getThemes();
+      if (list.length > 0) {
+        themeData = await getTheme(list[0].filename);
+        setThemeName(list[0].filename);
+      }
+    }
+    if (themeData) setTheme(themeData);
+  }
 
   // Handle OAuth callback (?code=... in URL after IDP redirect)
   useEffect(() => {
@@ -83,10 +109,12 @@ export default function App() {
 
     setAuthLoading(true);
     exchangeCodeForToken(code, appSettings.auth)
-      .then((token) => {
+      .then(async (token) => {
         storeToken(token);
         setAuthToken(token);
         window.history.replaceState({}, '', window.location.pathname);
+        // Now that we have a valid token, load the resume + theme data
+        await loadResumeData();
         setMode('editor');
       })
       .catch((err) => {
@@ -94,6 +122,7 @@ export default function App() {
         window.history.replaceState({}, '', window.location.pathname);
       })
       .finally(() => setAuthLoading(false));
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [appSettings]);
 
   // Load theme when selection changes

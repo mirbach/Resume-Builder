@@ -7,5 +7,5 @@ binding = "RESUME_KV"
 # 1. Run:  npx wrangler kv namespace create RESUME_KV
 # 2. Run:  npx wrangler kv namespace create RESUME_KV --preview
 # 3. Paste the returned IDs below:
-id = "REPLACE_WITH_KV_NAMESPACE_ID"
-preview_id = "REPLACE_WITH_KV_PREVIEW_NAMESPACE_ID"
+id = "06705d9c483e460b82e3b2de18b32520"
+preview_id = "bfd9f44465e14a53aaf9dae6759fcefe"
