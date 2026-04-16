@@ -118,10 +118,14 @@ async function verifyJwt(token: string, authority: string, clientId: string): Pr
   const now = Math.floor(Date.now() / 1000);
   if (claims.exp !== undefined && claims.exp < now) return false;
 
-  // Issuer check
-  if (claims.iss && claims.iss !== authority.replace(/\/$/, '')) return false;
+  // Issuer check — normalize both sides (strip trailing slashes)
+  if (claims.iss) {
+    const tokenIss = claims.iss.replace(/\/$/, '');
+    const expectedIss = authority.replace(/\/$/, '');
+    if (tokenIss !== expectedIss) return false;
+  }
 
-  // Audience check — access tokens may omit aud; we verify when present
+  // Audience check — we validate using id_token (aud = clientId per OIDC spec).
   if (claims.aud !== undefined) {
     const aud = Array.isArray(claims.aud) ? claims.aud : [claims.aud];
     if (!aud.includes(clientId)) return false;

@@ -111,6 +111,15 @@ export function getStoredIdToken(): string | null {
   return sessionStorage.getItem(ID_TOKEN_KEY);
 }
 
+/**
+ * Returns the token to use as a Bearer credential for our own API.
+ * Prefers id_token (always a JWT, aud = clientId) over access_token
+ * (which may be opaque/non-JWT depending on the provider).
+ */
+export function getApiToken(): string | null {
+  return sessionStorage.getItem(ID_TOKEN_KEY) ?? sessionStorage.getItem(TOKEN_KEY);
+}
+
 export function clearToken() {
   sessionStorage.removeItem(TOKEN_KEY);
   sessionStorage.removeItem(ID_TOKEN_KEY);

@@ -1,10 +1,7 @@
 import { type Env, ok, err, authGuard, sanitizeFilename, DEFAULT_THEME } from '../../_shared/helpers';
 
-// GET /api/themes  — list all themes
-export const onRequestGet: PagesFunction<Env> = async ({ request, env }) => {
-  const denied = await authGuard(request, env);
-  if (denied) return denied;
-
+// GET /api/themes — public (no auth required to view)
+export const onRequestGet: PagesFunction<Env> = async ({ env }) => {
   try {
     // Seed default theme if it doesn't exist yet
     const defaultKey = 'theme:default';

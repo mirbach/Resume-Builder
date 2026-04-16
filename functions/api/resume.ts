@@ -1,10 +1,7 @@
 import { type Env, ok, err, authGuard, DEFAULT_RESUME } from '../_shared/helpers';
 
-// GET /api/resume
-export const onRequestGet: PagesFunction<Env> = async ({ request, env }) => {
-  const denied = await authGuard(request, env);
-  if (denied) return denied;
-
+// GET /api/resume — public (no auth required to view)
+export const onRequestGet: PagesFunction<Env> = async ({ env }) => {
   try {
     const raw = await env.RESUME_KV.get('resume');
     const data = raw ? JSON.parse(raw) : DEFAULT_RESUME;

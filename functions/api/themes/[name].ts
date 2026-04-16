@@ -1,10 +1,7 @@
 import { type Env, ok, err, authGuard, sanitizeFilename, DEFAULT_THEME } from '../../_shared/helpers';
 
-// GET /api/themes/:name
-export const onRequestGet: PagesFunction<Env> = async ({ request, env, params }) => {
-  const denied = await authGuard(request, env);
-  if (denied) return denied;
-
+// GET /api/themes/:name — public (no auth required to view)
+export const onRequestGet: PagesFunction<Env> = async ({ env, params }) => {
   const raw_name = Array.isArray(params.name) ? params.name[0] : params.name;
   const name = sanitizeFilename(raw_name);
 

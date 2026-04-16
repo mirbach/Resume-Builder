@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import type { ResumeData, ResumeTheme, AppSettings, Language } from './lib/types';
 import { getResume, saveResume, getTheme, getThemes, getSettings, setAuthToken } from './lib/api';
-import { buildAuthUrl, exchangeCodeForToken, getStoredToken, storeToken, validateOAuthState, clearToken, buildLogoutUrl } from './lib/auth';
+import { buildAuthUrl, exchangeCodeForToken, getApiToken, storeToken, validateOAuthState, clearToken, buildLogoutUrl } from './lib/auth';
 import { resolveResume } from './lib/resolve';
 import ResumeEditor from './components/editor/ResumeEditor';
 import ResumeLayout from './components/resume/ResumeLayout';
@@ -37,8 +37,8 @@ export default function App() {
     async function init() {
       try {
         // Restore any stored token BEFORE making API calls so auth headers are present
-        const storedToken = getStoredToken();
-        if (storedToken) setAuthToken(storedToken);
+        const apiToken = getApiToken();
+        if (apiToken) setAuthToken(apiToken);
 
         // Always load settings first (settings endpoint is public)
         const settings = await getSettings().catch(() => null);
@@ -48,13 +48,6 @@ export default function App() {
         // the OAuth callback effect will exchange the code, then load data.
         const params = new URLSearchParams(window.location.search);
         if (params.has('code')) {
-          setLoading(false);
-          return;
-        }
-
-        // If auth is enabled but we have no token (fresh session / token expired),
-        // skip the protected data fetch — show the login screen instead.
-        if (settings?.auth.enabled && !storedToken) {
           setLoading(false);
           return;
         }
@@ -118,7 +111,7 @@ export default function App() {
     exchangeCodeForToken(code, appSettings.auth)
       .then(async ({ accessToken, idToken }) => {
         storeToken(accessToken, idToken);
-        setAuthToken(accessToken);
+        setAuthToken(idToken ?? accessToken);
         window.history.replaceState({}, '', window.location.pathname);
         // Now that we have a valid token, load the resume + theme data
         await loadResumeData();
@@ -167,7 +160,7 @@ export default function App() {
       return;
     }
     // Already have a token
-    const token = getStoredToken();
+    const token = getApiToken();
     if (token) {
       setAuthToken(token);
       setMode('editor');
@@ -209,8 +202,6 @@ export default function App() {
 
   // ---- Render: loading / error ----
   if (loading || !resumeData || !theme) {
-    // Auth required but no token — show login screen
-    const needsLogin = !loading && !loadError && !resumeData && appSettings?.auth.enabled;
     return (
       <div className={`flex h-screen items-center justify-center bg-gray-100 dark:bg-gray-900${darkMode ? ' dark' : ''}`}>
         {loadError ? (
@@ -222,22 +213,6 @@ export default function App() {
               className="mt-4 rounded-md bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-700"
             >
               Retry
-            </button>
-          </div>
-        ) : needsLogin ? (
-          <div className="text-center space-y-4">
-            <h1 className="text-xl font-bold text-gray-900 dark:text-white">Resume</h1>
-            <p className="text-sm text-gray-500 dark:text-gray-400">Sign in to view and edit your resume.</p>
-            {authError && (
-              <p className="text-sm text-red-600 dark:text-red-400">{authError}</p>
-            )}
-            <button
-              onClick={handleEditClick}
-              disabled={authLoading}
-              className="flex items-center gap-2 mx-auto rounded-md bg-blue-600 px-5 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-60"
-            >
-              {authLoading ? <Loader2 size={14} className="animate-spin" /> : <Pencil size={14} />}
-              Sign in
             </button>
           </div>
         ) : (
