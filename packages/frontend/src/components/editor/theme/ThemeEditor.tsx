@@ -1,8 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import type { ResumeTheme, ThemeColors, ThemeFonts, ThemeLayout, LayoutStyle, HeaderStyle, ResumeSection, PageMargins } from '../../../lib/types';
-import { getTheme, saveTheme, createTheme, deleteTheme, getThemes } from '../../../lib/api';
+import { getTheme, saveTheme, createTheme, deleteTheme, getThemes, uploadFile } from '../../../lib/api';
 import type { ThemeListItem } from '../../../lib/types';
-import { Save, Plus, Trash2, GripVertical, Loader2 } from 'lucide-react';
+import { Save, Plus, Trash2, GripVertical, Loader2, Upload, X } from 'lucide-react';
 
 interface Props {
   currentTheme: string;
@@ -42,6 +42,8 @@ export default function ThemeEditor({ currentTheme, onThemeChange, onClose }: Pr
   const [saving, setSaving] = useState(false);
   const [newName, setNewName] = useState('');
   const [showCreate, setShowCreate] = useState(false);
+  const [logoUploading, setLogoUploading] = useState(false);
+  const logoInputRef = useRef<HTMLInputElement>(null);
 
   const inputClasses = 'w-full rounded-md border border-gray-300 px-3 py-1.5 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none';
 
@@ -55,6 +57,21 @@ export default function ThemeEditor({ currentTheme, onThemeChange, onClose }: Pr
 
   function updateColors(partial: Partial<ThemeColors>) {
     setTheme({ ...theme, colors: { ...theme.colors, ...partial } });
+  }
+
+  async function handleLogoUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setLogoUploading(true);
+    try {
+      const { path } = await uploadFile(file, 'logo');
+      setTheme({ ...theme, logo: path });
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLogoUploading(false);
+      if (logoInputRef.current) logoInputRef.current.value = '';
+    }
   }
 
   function updateFonts(partial: Partial<ThemeFonts>) {
@@ -168,6 +185,63 @@ export default function ThemeEditor({ currentTheme, onThemeChange, onClose }: Pr
               </button>
             </div>
           )}
+
+          {/* Company Branding */}
+          <fieldset>
+            <legend className="text-sm font-semibold text-gray-700 mb-2">Company Branding</legend>
+            <p className="text-xs text-gray-500 mb-3">
+              Appears top-right on the resume — ideal for consulting company identity.
+            </p>
+            <div className="space-y-3">
+              <div>
+                <label className="block text-xs text-gray-500 mb-1">Company Name</label>
+                <input
+                  className={inputClasses}
+                  value={theme.companyName || ''}
+                  onChange={(e) => setTheme({ ...theme, companyName: e.target.value || undefined })}
+                  placeholder="Acme Consulting GmbH"
+                />
+              </div>
+              <div>
+                <label className="block text-xs text-gray-500 mb-1">Company Logo</label>
+                <div className="flex items-center gap-3">
+                  {theme.logo ? (
+                    <div className="flex items-center gap-2">
+                      <img
+                        src={theme.logo}
+                        alt="Company logo"
+                        className="h-10 w-auto max-w-[120px] object-contain rounded border border-gray-200 p-1"
+                      />
+                      <button
+                        onClick={() => setTheme({ ...theme, logo: undefined })}
+                        className="text-red-400 hover:text-red-600"
+                        title="Remove logo"
+                      >
+                        <X size={16} />
+                      </button>
+                    </div>
+                  ) : (
+                    <span className="text-xs text-gray-400">No logo uploaded</span>
+                  )}
+                  <input
+                    ref={logoInputRef}
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={handleLogoUpload}
+                  />
+                  <button
+                    onClick={() => logoInputRef.current?.click()}
+                    disabled={logoUploading}
+                    className="flex items-center gap-1 rounded-md border border-gray-300 px-3 py-1.5 text-sm text-gray-600 hover:bg-gray-50 disabled:opacity-50"
+                  >
+                    {logoUploading ? <Loader2 size={14} className="animate-spin" /> : <Upload size={14} />}
+                    {logoUploading ? 'Uploading…' : 'Upload Logo'}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </fieldset>
 
           {/* Colors */}
           <fieldset>

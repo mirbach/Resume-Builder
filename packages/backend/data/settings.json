@@ -5,6 +5,10 @@
     "clientId": "",
     "authority": "",
     "redirectUri": "http://localhost:5173/callback",
-    "scopes": ["openid", "profile", "email"]
+    "scopes": [
+      "openid",
+      "profile",
+      "email"
+    ]
   }
 }

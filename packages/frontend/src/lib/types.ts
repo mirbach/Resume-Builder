@@ -153,6 +153,7 @@ export interface ThemeLayout {
 
 export interface ResumeTheme {
   name: string;
+  companyName?: string;
   logo?: string; // file path from uploads
   colors: ThemeColors;
   fonts: ThemeFonts;

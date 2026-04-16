@@ -3,6 +3,7 @@ import {
   Page,
   Text,
   View,
+  Image,
   StyleSheet,
   Font,
 } from '@react-pdf/renderer';
@@ -56,6 +57,11 @@ function createStyles(theme: ResumeTheme) {
       backgroundColor: theme.colors.background,
     },
     header: { marginBottom: 12, paddingBottom: 8, borderBottomWidth: 2, borderBottomColor: theme.colors.primary },
+    headerInner: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' },
+    headerLeft: { flex: 1 },
+    headerRight: { alignItems: 'flex-end', marginLeft: 16, maxWidth: 120 },
+    companyLogo: { width: 'auto', height: 36, objectFit: 'contain', marginBottom: 3 },
+    companyName: { fontSize: 8, fontWeight: 600, color: theme.colors.secondary, textAlign: 'right' },
     name: { fontSize: 22, fontWeight: 700, color: theme.colors.heading },
     title: { fontSize: 14, marginTop: 2, color: theme.colors.primary },
     contactRow: { flexDirection: 'row', flexWrap: 'wrap', marginTop: 6, gap: 10 },
@@ -124,18 +130,32 @@ interface Props {
   theme: ResumeTheme;
 }
 
-function SectionPersonal({ resume, styles }: { resume: ResolvedResume; styles: ReturnType<typeof createStyles> }) {
+function SectionPersonal({ resume, styles, theme }: { resume: ResolvedResume; styles: ReturnType<typeof createStyles>; theme: ResumeTheme }) {
   return (
     <View style={styles.header}>
-      <Text style={styles.name}>{resume.personal.name}</Text>
-      <Text style={styles.title}>{resume.personal.title}</Text>
-      <View style={styles.contactRow}>
-        {resume.personal.email && <Text style={styles.contactItem}>{resume.personal.email}</Text>}
-        {resume.personal.phone && <Text style={styles.contactItem}>{resume.personal.phone}</Text>}
-        {resume.personal.location && <Text style={styles.contactItem}>{resume.personal.location}</Text>}
-        {resume.personal.linkedin && <Text style={styles.contactItem}>{resume.personal.linkedin}</Text>}
-        {resume.personal.github && <Text style={styles.contactItem}>{resume.personal.github}</Text>}
-        {resume.personal.website && <Text style={styles.contactItem}>{resume.personal.website}</Text>}
+      <View style={styles.headerInner}>
+        <View style={styles.headerLeft}>
+          <Text style={styles.name}>{resume.personal.name}</Text>
+          <Text style={styles.title}>{resume.personal.title}</Text>
+          <View style={styles.contactRow}>
+            {resume.personal.email && <Text style={styles.contactItem}>{resume.personal.email}</Text>}
+            {resume.personal.phone && <Text style={styles.contactItem}>{resume.personal.phone}</Text>}
+            {resume.personal.location && <Text style={styles.contactItem}>{resume.personal.location}</Text>}
+            {resume.personal.linkedin && <Text style={styles.contactItem}>{resume.personal.linkedin}</Text>}
+            {resume.personal.github && <Text style={styles.contactItem}>{resume.personal.github}</Text>}
+            {resume.personal.website && <Text style={styles.contactItem}>{resume.personal.website}</Text>}
+          </View>
+        </View>
+        {(theme.logo || theme.companyName) && (
+          <View style={styles.headerRight}>
+            {theme.logo && (
+              <Image src={theme.logo} style={styles.companyLogo} />
+            )}
+            {theme.companyName && (
+              <Text style={styles.companyName}>{theme.companyName}</Text>
+            )}
+          </View>
+        )}
       </View>
     </View>
   );
@@ -329,9 +349,9 @@ function SectionReferences({ resume, styles }: { resume: ResolvedResume; styles:
   );
 }
 
-function renderPdfSection(section: ResumeSection, resume: ResolvedResume, styles: ReturnType<typeof createStyles>) {
+function renderPdfSection(section: ResumeSection, resume: ResolvedResume, styles: ReturnType<typeof createStyles>, theme: ResumeTheme) {
   switch (section) {
-    case 'personal': return <SectionPersonal key="personal" resume={resume} styles={styles} />;
+    case 'personal': return <SectionPersonal key="personal" resume={resume} styles={styles} theme={theme} />;
     case 'summary': return <SectionSummary key="summary" resume={resume} styles={styles} />;
     case 'experience': return <SectionExperience key="experience" resume={resume} styles={styles} />;
     case 'education': return <SectionEducation key="education" resume={resume} styles={styles} />;
@@ -351,7 +371,7 @@ export default function ResumePdfDocument({ resume, theme }: Props) {
   return (
     <Document>
       <Page size="A4" style={styles.page}>
-        {theme.layout.sectionOrder.map((section) => renderPdfSection(section, resume, styles))}
+        {theme.layout.sectionOrder.map((section) => renderPdfSection(section, resume, styles, theme))}
       </Page>
     </Document>
   );

@@ -1,5 +1,5 @@
 {
-  "name": "Default",
+  "name": "test",
   "colors": {
     "primary": "#2563eb",
     "secondary": "#64748b",
@@ -14,7 +14,7 @@
     "size": "medium"
   },
   "layout": {
-    "style": "two-column",
+    "style": "single-column",
     "headerStyle": "full-width",
     "sectionOrder": [
       "personal",

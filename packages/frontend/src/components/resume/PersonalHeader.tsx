@@ -69,12 +69,24 @@ export default function PersonalHeader({ data, theme }: Props) {
             )}
           </div>
         </div>
-        {theme.logo && (
-          <img
-            src={theme.logo}
-            alt="Company logo"
-            className="h-12 w-auto shrink-0 object-contain"
-          />
+        {(theme.logo || theme.companyName) && (
+          <div className="flex flex-col items-end shrink-0 gap-1 min-w-[80px]">
+            {theme.logo && (
+              <img
+                src={theme.logo}
+                alt={theme.companyName || 'Company logo'}
+                className="h-12 w-auto object-contain"
+              />
+            )}
+            {theme.companyName && (
+              <span
+                className="text-xs font-semibold text-right leading-tight"
+                style={{ color: theme.colors.secondary }}
+              >
+                {theme.companyName}
+              </span>
+            )}
+          </div>
         )}
       </div>
     </div>
