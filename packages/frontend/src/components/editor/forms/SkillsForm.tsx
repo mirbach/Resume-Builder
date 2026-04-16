@@ -57,9 +57,9 @@ export default function SkillsForm({ data, onChange }: Props) {
       </div>
 
       {data.map((cat, catIndex) => (
-        <div key={cat.id} className="rounded-lg border border-gray-200 bg-white p-4 space-y-3">
+        <div key={cat.id} className="entry-card rounded-lg border border-gray-200 bg-white p-4 space-y-3">
           <div className="flex items-center justify-between">
-            <span className="text-sm font-medium text-gray-500">
+            <span className="entry-label text-sm font-medium text-gray-500">
               {cat.category.en || 'New Category'}
             </span>
             <button
@@ -84,7 +84,7 @@ export default function SkillsForm({ data, onChange }: Props) {
               {cat.items.map((item, skillIndex) => (
                 <span
                   key={skillIndex}
-                  className="inline-flex items-center gap-1 rounded-full bg-blue-50 px-3 py-1 text-sm text-blue-700"
+                  className="inline-flex items-center gap-1 rounded-full bg-blue-50 dark:bg-blue-900/40 px-3 py-1 text-sm text-blue-700 dark:text-blue-300"
                 >
                   {item}
                   <button
@@ -108,7 +108,7 @@ export default function SkillsForm({ data, onChange }: Props) {
               />
               <button
                 onClick={() => addSkill(catIndex)}
-                className="rounded-md bg-gray-100 px-3 py-1.5 text-sm text-gray-700 hover:bg-gray-200"
+                className="rounded-md bg-gray-100 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600 px-3 py-1.5 text-sm text-gray-700 hover:bg-gray-200"
               >
                 Add
               </button>

@@ -9,7 +9,7 @@ import ThemeSelector from './components/toolbar/ThemeSelector';
 import ThemeEditor from './components/editor/theme/ThemeEditor';
 import PdfExportButton from './components/pdf/PdfExportButton';
 import SettingsPage from './components/SettingsPage';
-import { Save, CheckCircle, AlertCircle, Loader2, Palette, Settings } from 'lucide-react';
+import { Save, CheckCircle, AlertCircle, Loader2, Palette, Settings, Moon, Sun } from 'lucide-react';
 
 type SaveStatus = 'idle' | 'saving' | 'saved' | 'error';
 
@@ -23,6 +23,7 @@ export default function App() {
   const [loadError, setLoadError] = useState<string | null>(null);
   const [showThemeEditor, setShowThemeEditor] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
+  const [darkMode, setDarkMode] = useState(() => localStorage.getItem('darkMode') === 'true');
   const saveTimerRef = useRef<ReturnType<typeof setTimeout>>();
 
   // Load initial data — fall back to first available theme if 'default' is missing
@@ -83,7 +84,7 @@ export default function App() {
 
   if (loading || !resumeData || !theme) {
     return (
-      <div className="flex h-screen items-center justify-center bg-gray-100">
+      <div className={`flex h-screen items-center justify-center bg-gray-100 dark:bg-gray-900${darkMode ? ' dark' : ''}`}>
         {loadError ? (
           <div className="text-center">
             <AlertCircle className="mx-auto mb-3 text-red-500" size={32} />
@@ -105,10 +106,10 @@ export default function App() {
   const resolved = resolveResume(resumeData, language);
 
   return (
-    <div className="flex h-screen flex-col bg-gray-100">
+    <div className={`flex h-screen flex-col bg-gray-100 dark:bg-gray-900${darkMode ? ' dark' : ''}`}>
       {/* Toolbar */}
-      <header className="flex items-center justify-between border-b border-gray-200 bg-white px-4 py-2 shadow-sm">
-        <h1 className="text-lg font-bold text-gray-900">Resume Builder</h1>
+      <header className="flex items-center justify-between border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-4 py-2 shadow-sm">
+        <h1 className="text-lg font-bold text-gray-900 dark:text-white">Resume Builder</h1>
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-2 text-sm">
             {saveStatus === 'saving' && (
@@ -140,7 +141,7 @@ export default function App() {
                       setTimeout(() => setSaveStatus('idle'), 3000);
                     });
                 }}
-                className="flex items-center gap-1 text-gray-500 hover:text-gray-700"
+                className="flex items-center gap-1 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
               >
                 <Save size={14} /> Save
               </button>
@@ -149,15 +150,27 @@ export default function App() {
           <ThemeSelector value={themeName} onChange={setThemeName} />
           <button
             onClick={() => setShowThemeEditor(true)}
-            className="flex items-center gap-1 rounded-md border border-gray-300 px-2 py-1.5 text-sm text-gray-600 hover:bg-gray-50"
+            className="flex items-center gap-1 rounded-md border border-gray-300 dark:border-gray-600 px-2 py-1.5 text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
           >
             <Palette size={14} /> Edit Theme
           </button>
           <LanguageSwitcher language={language} onChange={setLanguage} />
           <PdfExportButton resume={resolved} theme={theme} language={language} />
           <button
+            aria-label="Toggle dark mode"
+            onClick={() => {
+              const next = !darkMode;
+              setDarkMode(next);
+              localStorage.setItem('darkMode', String(next));
+            }}
+            className="flex items-center gap-1 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
+          >
+            {darkMode ? <Sun size={16} /> : <Moon size={16} />}
+          </button>
+          <button
             onClick={() => setShowSettings(true)}
-            className="flex items-center gap-1 text-gray-500 hover:text-gray-700"
+            aria-label="Settings"
+            className="flex items-center gap-1 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
           >
             <Settings size={16} />
           </button>
@@ -165,7 +178,7 @@ export default function App() {
       </header>
 
       {showSettings ? (
-        <div className="flex-1 overflow-y-auto bg-gray-50">
+        <div className="flex-1 overflow-y-auto bg-gray-50 dark:bg-gray-900">
           <SettingsPage onClose={() => setShowSettings(false)} />
         </div>
       ) : (
@@ -173,12 +186,12 @@ export default function App() {
       {/* Split pane */}
       <div className="flex flex-1 overflow-hidden">
         {/* Editor */}
-        <div className="w-1/2 border-r border-gray-200 overflow-hidden">
+        <div className="w-1/2 border-r border-gray-200 dark:border-gray-700 overflow-hidden">
           <ResumeEditor data={resumeData} onChange={handleResumeChange} />
         </div>
 
         {/* Preview */}
-        <div className="w-1/2 overflow-y-auto p-6 bg-gray-200">
+        <div className="w-1/2 overflow-y-auto p-6 bg-gray-200 dark:bg-gray-700">
           <ResumeLayout resume={resolved} theme={theme} />
         </div>
       </div>

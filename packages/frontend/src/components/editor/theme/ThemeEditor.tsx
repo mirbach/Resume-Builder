@@ -153,10 +153,10 @@ export default function ThemeEditor({ currentTheme, onThemeChange, onClose }: Pr
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-      <div className="bg-white rounded-xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col">
-        <div className="flex items-center justify-between border-b px-6 py-4 flex-shrink-0">
-          <h2 className="text-lg font-bold">Theme Editor</h2>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-600 text-xl">&times;</button>
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col">
+        <div className="flex items-center justify-between border-b dark:border-gray-700 px-6 py-4 flex-shrink-0">
+          <h2 className="text-lg font-bold dark:text-white">Theme Editor</h2>
+          <button onClick={onClose} className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 text-xl">&times;</button>
         </div>
 
         <div className="p-6 space-y-6 overflow-y-auto flex-1">
@@ -192,7 +192,7 @@ export default function ThemeEditor({ currentTheme, onThemeChange, onClose }: Pr
               <button onClick={handleCreate} className="rounded bg-blue-600 px-3 py-1.5 text-sm text-white hover:bg-blue-700">
                 Create
               </button>
-              <button onClick={() => setShowCreate(false)} className="text-gray-400 hover:text-gray-600 text-sm">
+              <button onClick={() => setShowCreate(false)} className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 text-sm">
                 Cancel
               </button>
             </div>
@@ -200,13 +200,13 @@ export default function ThemeEditor({ currentTheme, onThemeChange, onClose }: Pr
 
           {/* Company Branding */}
           <fieldset>
-            <legend className="text-sm font-semibold text-gray-700 mb-2">Company Branding</legend>
-            <p className="text-xs text-gray-500 mb-3">
+            <legend className="text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">Company Branding</legend>
+            <p className="text-xs text-gray-500 dark:text-gray-400 mb-3">
               Appears top-right on the resume — ideal for consulting company identity.
             </p>
             <div className="space-y-3">
               <div>
-                <label className="block text-xs text-gray-500 mb-1">Company Name</label>
+                <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">Company Name</label>
                 <input
                   className={inputClasses}
                   value={theme.companyName || ''}
@@ -215,7 +215,7 @@ export default function ThemeEditor({ currentTheme, onThemeChange, onClose }: Pr
                 />
               </div>
               <div>
-                <label className="block text-xs text-gray-500 mb-1">Company Logo</label>
+                <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">Company Logo</label>
                 <div className="flex items-center gap-3">
                   {theme.logo ? (
                     <div className="flex items-center gap-2">
@@ -245,7 +245,7 @@ export default function ThemeEditor({ currentTheme, onThemeChange, onClose }: Pr
                   <button
                     onClick={() => logoInputRef.current?.click()}
                     disabled={logoUploading}
-                    className="flex items-center gap-1 rounded-md border border-gray-300 px-3 py-1.5 text-sm text-gray-600 hover:bg-gray-50 disabled:opacity-50"
+                    className="flex items-center gap-1 rounded-md border border-gray-300 dark:border-gray-600 px-3 py-1.5 text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50"
                   >
                     {logoUploading ? <Loader2 size={14} className="animate-spin" /> : <Upload size={14} />}
                     {logoUploading ? 'Uploading…' : 'Upload Logo'}
@@ -257,10 +257,10 @@ export default function ThemeEditor({ currentTheme, onThemeChange, onClose }: Pr
 
           {/* Colors */}
           <fieldset>
-            <legend className="text-sm font-semibold text-gray-700 mb-2">Colors</legend>
+            <legend className="text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">Colors</legend>
             <div className="grid grid-cols-3 gap-3">
               {(Object.keys(theme.colors) as (keyof ThemeColors)[]).map((key) => (
-                <label key={key} className="flex items-center gap-2 text-sm">
+                <label key={key} className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-200">
                   <input
                     type="color"
                     value={theme.colors[key]}
@@ -275,22 +275,22 @@ export default function ThemeEditor({ currentTheme, onThemeChange, onClose }: Pr
 
           {/* Fonts */}
           <fieldset>
-            <legend className="text-sm font-semibold text-gray-700 mb-2">Fonts</legend>
+            <legend className="text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">Fonts</legend>
             <div className="grid grid-cols-3 gap-3">
               <div>
-                <label className="block text-xs text-gray-500">Heading</label>
+                <label className="block text-xs text-gray-500 dark:text-gray-400">Heading</label>
                 <select className={inputClasses} value={theme.fonts.heading} onChange={(e) => updateFonts({ heading: e.target.value })}>
                   {AVAILABLE_FONTS.map((f) => <option key={f.value} value={f.value}>{f.label}</option>)}
                 </select>
               </div>
               <div>
-                <label className="block text-xs text-gray-500">Body</label>
+                <label className="block text-xs text-gray-500 dark:text-gray-400">Body</label>
                 <select className={inputClasses} value={theme.fonts.body} onChange={(e) => updateFonts({ body: e.target.value })}>
                   {AVAILABLE_FONTS.map((f) => <option key={f.value} value={f.value}>{f.label}</option>)}
                 </select>
               </div>
               <div>
-                <label className="block text-xs text-gray-500">Size</label>
+                <label className="block text-xs text-gray-500 dark:text-gray-400">Size</label>
                 <select className={inputClasses} value={theme.fonts.size} onChange={(e) => updateFonts({ size: e.target.value as ThemeFonts['size'] })}>
                   <option value="small">Small</option>
                   <option value="medium">Medium</option>
@@ -302,10 +302,10 @@ export default function ThemeEditor({ currentTheme, onThemeChange, onClose }: Pr
 
           {/* Layout */}
           <fieldset>
-            <legend className="text-sm font-semibold text-gray-700 mb-2">Layout</legend>
+            <legend className="text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">Layout</legend>
             <div className="grid grid-cols-3 gap-3 mb-3">
               <div>
-                <label className="block text-xs text-gray-500">Style</label>
+                <label className="block text-xs text-gray-500 dark:text-gray-400">Style</label>
                 <select className={inputClasses} value={theme.layout.style} onChange={(e) => updateLayout({ style: e.target.value as LayoutStyle })}>
                   <option value="single-column">Single Column</option>
                   <option value="two-column">Two Column</option>
@@ -313,14 +313,14 @@ export default function ThemeEditor({ currentTheme, onThemeChange, onClose }: Pr
                 </select>
               </div>
               <div>
-                <label className="block text-xs text-gray-500">Header</label>
+                <label className="block text-xs text-gray-500 dark:text-gray-400">Header</label>
                 <select className={inputClasses} value={theme.layout.headerStyle} onChange={(e) => updateLayout({ headerStyle: e.target.value as HeaderStyle })}>
                   <option value="full-width">Full Width</option>
                   <option value="compact">Compact</option>
                   <option value="centered">Centered</option>
                 </select>
               </div>
-              <label className="flex items-center gap-2 text-sm self-end pb-1">
+              <label className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-200 self-end pb-1">
                 <input
                   type="checkbox"
                   checked={theme.layout.showPhoto}
@@ -334,11 +334,11 @@ export default function ThemeEditor({ currentTheme, onThemeChange, onClose }: Pr
 
           {/* Margins */}
           <fieldset>
-            <legend className="text-sm font-semibold text-gray-700 mb-2">Page Margins (px)</legend>
+            <legend className="text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">Page Margins (px)</legend>
             <div className="grid grid-cols-4 gap-3">
               {(['top', 'right', 'bottom', 'left'] as const).map((side) => (
                 <div key={side}>
-                  <label className="block text-xs text-gray-500 capitalize">{side}</label>
+                  <label className="block text-xs text-gray-500 dark:text-gray-400 capitalize">{side}</label>
                   <input
                     type="number"
                     className={inputClasses}
@@ -352,16 +352,16 @@ export default function ThemeEditor({ currentTheme, onThemeChange, onClose }: Pr
 
           {/* Section Order */}
           <fieldset>
-            <legend className="text-sm font-semibold text-gray-700 mb-2">Section Order</legend>
+            <legend className="text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">Section Order</legend>
             <div className="space-y-1">
               {theme.layout.sectionOrder.map((section, idx) => (
-                <div key={section} className="flex items-center gap-2 rounded border border-gray-200 px-3 py-1.5 text-sm">
-                  <GripVertical size={14} className="text-gray-400" />
+                <div key={section} className="flex items-center gap-2 rounded border border-gray-200 dark:border-gray-600 px-3 py-1.5 text-sm dark:text-gray-200">
+                  <GripVertical size={14} className="text-gray-400 dark:text-gray-500" />
                   <span className="flex-1 capitalize">{section}</span>
-                  <button onClick={() => moveSectionUp(idx)} disabled={idx === 0} className="text-gray-400 hover:text-gray-600 disabled:opacity-30">
+                  <button onClick={() => moveSectionUp(idx)} disabled={idx === 0} className="text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-200 disabled:opacity-30">
                     ↑
                   </button>
-                  <button onClick={() => moveSectionDown(idx)} disabled={idx === theme.layout.sectionOrder.length - 1} className="text-gray-400 hover:text-gray-600 disabled:opacity-30">
+                  <button onClick={() => moveSectionDown(idx)} disabled={idx === theme.layout.sectionOrder.length - 1} className="text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-200 disabled:opacity-30">
                     ↓
                   </button>
                 </div>
@@ -372,7 +372,7 @@ export default function ThemeEditor({ currentTheme, onThemeChange, onClose }: Pr
         </div>
 
         {/* Save — always visible footer */}
-        <div className="flex flex-shrink-0 justify-end border-t px-6 py-4">
+        <div className="flex flex-shrink-0 justify-end border-t dark:border-gray-700 px-6 py-4">
           <button
             onClick={handleSave}
             disabled={saving}

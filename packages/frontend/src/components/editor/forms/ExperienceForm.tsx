@@ -10,11 +10,11 @@ interface Props {
 }
 
 const ELITE_CATEGORIES: { value: EliteCategory; label: string; color: string }[] = [
-  { value: 'experience', label: 'Experience', color: 'bg-blue-100 text-blue-700' },
-  { value: 'leadership', label: 'Leadership', color: 'bg-purple-100 text-purple-700' },
-  { value: 'impact', label: 'Impact', color: 'bg-green-100 text-green-700' },
-  { value: 'transformation', label: 'Transformation', color: 'bg-orange-100 text-orange-700' },
-  { value: 'excellence', label: 'Excellence', color: 'bg-yellow-100 text-yellow-700' },
+  { value: 'experience', label: 'Experience', color: 'bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300' },
+  { value: 'leadership', label: 'Leadership', color: 'bg-purple-100 text-purple-700 dark:bg-purple-900/40 dark:text-purple-300' },
+  { value: 'impact', label: 'Impact', color: 'bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-300' },
+  { value: 'transformation', label: 'Transformation', color: 'bg-orange-100 text-orange-700 dark:bg-orange-900/40 dark:text-orange-300' },
+  { value: 'excellence', label: 'Excellence', color: 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/40 dark:text-yellow-300' },
 ];
 
 function newAchievement(): Achievement {
@@ -115,40 +115,40 @@ export default function ExperienceForm({ data, onChange }: Props) {
       </div>
 
       {data.map((entry, entryIndex) => (
-        <div key={entry.id} className="rounded-lg border border-gray-200 bg-white">
+        <div key={entry.id} className="entry-card rounded-lg border border-gray-200 bg-white">
           {/* Entry Header */}
           <div
-            className="flex items-center gap-2 px-4 py-3 cursor-pointer hover:bg-gray-50"
+            className="flex items-center gap-2 px-4 py-3 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700"
             onClick={() => toggleEntry(entry.id)}
           >
-            <GripVertical size={16} className="text-gray-400" />
+            <GripVertical size={16} className="text-gray-400 dark:text-gray-500" />
             {expandedEntries.has(entry.id) ? (
-              <ChevronDown size={16} className="text-gray-500" />
+              <ChevronDown size={16} className="text-gray-500 dark:text-gray-400" />
             ) : (
-              <ChevronRight size={16} className="text-gray-500" />
+              <ChevronRight size={16} className="text-gray-500 dark:text-gray-400" />
             )}
             <div className="flex-1">
-              <span className="font-medium text-gray-900">
+              <span className="font-medium text-gray-900 dark:text-gray-100">
                 {entry.role.en || 'New Position'}
               </span>
               {entry.company && (
-                <span className="text-gray-500 ml-2">at {entry.company}</span>
+                <span className="text-gray-500 dark:text-gray-300 ml-2">at {entry.company}</span>
               )}
               {entry.period && (
-                <span className="text-gray-400 ml-2 text-sm">{entry.period}</span>
+                <span className="text-gray-400 dark:text-gray-400 ml-2 text-sm">{entry.period}</span>
               )}
             </div>
             <div className="flex items-center gap-1">
               <button
                 onClick={(e) => { e.stopPropagation(); moveEntry(entryIndex, -1); }}
-                className="p-1 text-gray-400 hover:text-gray-600"
+                className="p-1 text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-200"
                 title="Move up"
               >
                 ↑
               </button>
               <button
                 onClick={(e) => { e.stopPropagation(); moveEntry(entryIndex, 1); }}
-                className="p-1 text-gray-400 hover:text-gray-600"
+                className="p-1 text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-200"
                 title="Move down"
               >
                 ↓
@@ -220,7 +220,7 @@ export default function ExperienceForm({ data, onChange }: Props) {
                 {entry.achievements.map((ach, achIndex) => (
                   <div
                     key={ach.id}
-                    className="rounded-md border border-gray-200 bg-gray-50 p-3 space-y-3"
+                    className="rounded-md border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 p-3 space-y-3"
                   >
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
@@ -273,7 +273,7 @@ export default function ExperienceForm({ data, onChange }: Props) {
                         updateAchievement(entryIndex, achIndex, { ...ach, challenge })
                       }
                       multiline
-                      rows={2}
+                      rows={4}
                       placeholder={{
                         en: 'What was the problem or challenge?',
                         de: 'Was war das Problem oder die Herausforderung?',
@@ -286,7 +286,7 @@ export default function ExperienceForm({ data, onChange }: Props) {
                         updateAchievement(entryIndex, achIndex, { ...ach, action })
                       }
                       multiline
-                      rows={2}
+                      rows={4}
                       placeholder={{
                         en: 'What did you do to address it?',
                         de: 'Was haben Sie unternommen?',
@@ -299,7 +299,7 @@ export default function ExperienceForm({ data, onChange }: Props) {
                         updateAchievement(entryIndex, achIndex, { ...ach, result })
                       }
                       multiline
-                      rows={2}
+                      rows={4}
                       placeholder={{
                         en: 'What was the measurable outcome?',
                         de: 'Was war das messbare Ergebnis?',

@@ -47,9 +47,9 @@ export default function ReferencesForm({ data, onChange }: Props) {
       </div>
 
       {data.map((entry, index) => (
-        <div key={entry.id} className="rounded-lg border border-gray-200 bg-white p-4 space-y-3">
+        <div key={entry.id} className="entry-card rounded-lg border border-gray-200 bg-white p-4 space-y-3">
           <div className="flex items-center justify-between">
-            <span className="text-sm font-medium text-gray-500">{entry.name || 'New Reference'}</span>
+            <span className="entry-label text-sm font-medium text-gray-500">{entry.name || 'New Reference'}</span>
             <button onClick={() => removeEntry(index)} aria-label="Remove reference" className="text-red-400 hover:text-red-600">
               <Trash2 size={16} />
             </button>

@@ -1,1 +1,60 @@
 @import "tailwindcss";
+
+/* Class-based dark mode — applied when .dark is on an ancestor */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Apply dark color-scheme at the root so all native browser widgets (resize
+   handles, scrollbars, date pickers, etc.) render in dark style */
+.dark {
+  color-scheme: dark;
+}
+
+/* Dark mode: auto-style all form inputs, selects and textareas */
+.dark input:not([type='file']):not([type='checkbox']):not([type='radio']),
+.dark select,
+.dark textarea {
+  background-color: rgb(55 65 81);   /* gray-700 */
+  border-color: rgb(75 85 99);       /* gray-600 */
+  color: rgb(255 255 255);
+  color-scheme: dark;
+}
+.dark input::placeholder,
+.dark textarea::placeholder {
+  color: rgb(156 163 175); /* gray-400 */
+}
+
+/* Dark mode: style the textarea resize handle directly (Chromium) */
+.dark textarea::-webkit-resizer {
+  background-color: rgb(55 65 81); /* gray-700 — matches textarea background */
+}
+
+/* Dark mode: entry cards and labels inside editor forms */
+.dark .editor-form .entry-card {
+  background-color: rgb(31 41 55);   /* gray-800 */
+  border-color: rgb(55 65 81);       /* gray-700 */
+}
+.dark .editor-form label {
+  color: rgb(209 213 219); /* gray-300 */
+}
+.dark .editor-form h3 {
+  color: rgb(255 255 255);
+}
+.dark .editor-form .entry-label {
+  color: rgb(156 163 175); /* gray-400 */
+}
+
+/* Dark mode scrollbars */
+.dark *::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+.dark *::-webkit-scrollbar-track {
+  background: rgb(31 41 55); /* gray-800 */
+}
+.dark *::-webkit-scrollbar-thumb {
+  background: rgb(75 85 99); /* gray-600 */
+  border-radius: 4px;
+}
+.dark *::-webkit-scrollbar-thumb:hover {
+  background: rgb(107 114 128); /* gray-500 */
+}

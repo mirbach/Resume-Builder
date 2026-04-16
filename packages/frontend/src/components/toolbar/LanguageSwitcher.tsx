@@ -7,13 +7,13 @@ interface Props {
 
 export default function LanguageSwitcher({ language, onChange }: Props) {
   return (
-    <div className="flex rounded-lg border border-gray-300 overflow-hidden text-sm">
+    <div className="flex rounded-lg border border-gray-300 dark:border-gray-600 overflow-hidden text-sm">
       <button
         onClick={() => onChange('en')}
         className={`px-3 py-1.5 font-medium transition-colors ${
           language === 'en'
             ? 'bg-blue-600 text-white'
-            : 'bg-white text-gray-600 hover:bg-gray-50'
+            : 'bg-white dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600'
         }`}
       >
         EN
@@ -23,7 +23,7 @@ export default function LanguageSwitcher({ language, onChange }: Props) {
         className={`px-3 py-1.5 font-medium transition-colors ${
           language === 'de'
             ? 'bg-blue-600 text-white'
-            : 'bg-white text-gray-600 hover:bg-gray-50'
+            : 'bg-white dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600'
         }`}
       >
         DE
