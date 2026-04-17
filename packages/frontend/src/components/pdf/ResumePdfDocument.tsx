@@ -7,6 +7,10 @@ import {
   Link,
   StyleSheet,
   Font,
+  Svg,
+  Path,
+  Rect,
+  Circle,
 } from '@react-pdf/renderer';
 import type { ResolvedResume, ResumeTheme, ResumeSection, EliteCategory } from '../../lib/types';
 
@@ -55,6 +59,65 @@ const ELITE_COLOR: Record<EliteCategory, string> = {
   excellence: '#a16207',
 };
 
+// ---- Inline SVG icons for the PDF contact row ----
+const IC = 8; // icon size in pt
+type IconProps = { color: string };
+
+function IconMail({ color }: IconProps) {
+  return (
+    <Svg viewBox="0 0 24 24" width={IC} height={IC}>
+      <Rect x="2" y="4" width="20" height="16" rx="2" stroke={color} strokeWidth={2} fill="none" strokeLinecap="round" strokeLinejoin="round" />
+      <Path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" stroke={color} strokeWidth={2} fill="none" strokeLinecap="round" strokeLinejoin="round" />
+    </Svg>
+  );
+}
+
+function IconPhone({ color }: IconProps) {
+  return (
+    <Svg viewBox="0 0 24 24" width={IC} height={IC}>
+      <Path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.15 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.07 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" stroke={color} strokeWidth={2} fill="none" strokeLinecap="round" strokeLinejoin="round" />
+    </Svg>
+  );
+}
+
+function IconMapPin({ color }: IconProps) {
+  return (
+    <Svg viewBox="0 0 24 24" width={IC} height={IC}>
+      <Path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" stroke={color} strokeWidth={2} fill="none" strokeLinecap="round" strokeLinejoin="round" />
+      <Circle cx="12" cy="10" r="3" stroke={color} strokeWidth={2} fill="none" />
+    </Svg>
+  );
+}
+
+function IconLinkedin({ color }: IconProps) {
+  return (
+    <Svg viewBox="0 0 24 24" width={IC} height={IC}>
+      <Path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" stroke={color} strokeWidth={2} fill="none" strokeLinecap="round" strokeLinejoin="round" />
+      <Rect x="2" y="9" width="4" height="12" stroke={color} strokeWidth={2} fill="none" strokeLinecap="round" strokeLinejoin="round" />
+      <Circle cx="4" cy="4" r="2" stroke={color} strokeWidth={2} fill="none" />
+    </Svg>
+  );
+}
+
+function IconGithub({ color }: IconProps) {
+  return (
+    <Svg viewBox="0 0 24 24" width={IC} height={IC}>
+      <Path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4" stroke={color} strokeWidth={2} fill="none" strokeLinecap="round" strokeLinejoin="round" />
+      <Path d="M9 18c-4.51 2-5-2-7-2" stroke={color} strokeWidth={2} fill="none" strokeLinecap="round" strokeLinejoin="round" />
+    </Svg>
+  );
+}
+
+function IconGlobe({ color }: IconProps) {
+  return (
+    <Svg viewBox="0 0 24 24" width={IC} height={IC}>
+      <Circle cx="12" cy="12" r="10" stroke={color} strokeWidth={2} fill="none" />
+      <Path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" stroke={color} strokeWidth={2} fill="none" strokeLinecap="round" strokeLinejoin="round" />
+      <Path d="M2 12h20" stroke={color} strokeWidth={2} fill="none" strokeLinecap="round" />
+    </Svg>
+  );
+}
+
 function createStyles(theme: ResumeTheme) {
   const m = theme.layout.pageMargins;
   const bodyFont = pdfFont(theme.fonts.body);
@@ -76,11 +139,12 @@ function createStyles(theme: ResumeTheme) {
     headerLeft: { flex: 1 },
     headerRight: { alignItems: 'flex-end', marginLeft: 16, maxWidth: 120 },
     companyLogo: { width: 'auto', height: 36, objectFit: 'contain', marginBottom: 3 },
-    companyName: { fontSize: 8, fontFamily: headingFontBold, color: theme.colors.secondary, textAlign: 'right' },
+    companyName: { fontSize: 8, fontFamily: headingFontBold, color: theme.colors.secondary, textAlign: 'left' },
     photo: { width: 64, height: 64, borderRadius: 32, objectFit: 'cover', marginRight: 14, borderWidth: 2, borderColor: theme.colors.primary },
     name: { fontSize: 22, fontFamily: headingFontBold, color: theme.colors.heading },
     title: { fontSize: 14, marginTop: 2, color: theme.colors.primary },
     contactRow: { flexDirection: 'row', flexWrap: 'wrap', marginTop: 6, gap: 10 },
+    contactCell: { flexDirection: 'row', alignItems: 'center', gap: 2 },
     contactItem: { fontSize: 8, color: theme.colors.secondary },
     sectionTitle: {
       fontSize: 12,
@@ -164,16 +228,51 @@ function SectionPersonal({ resume, styles, theme }: { resume: ResolvedResume; st
           <Text style={styles.name}>{resume.personal.name}</Text>
           <Text style={styles.title}>{resume.personal.title}</Text>
           {theme.companyName && (
-            <Text style={[styles.companyName, { textAlign: 'left', marginTop: 2 }]}>{theme.companyName}</Text>
+            <Text style={[styles.companyName, { marginTop: 2 }]}>{theme.companyName}</Text>
           )}
           <View style={styles.contactRow}>
-            {theme.companyEmail && <Text style={styles.contactItem}>{theme.companyEmail}</Text>}
-            {resume.personal.phone && <Text style={styles.contactItem}>{resume.personal.phone}</Text>}
-            {resume.personal.location && <Text style={styles.contactItem}>{resume.personal.location}</Text>}
-            {resume.personal.linkedin && <Text style={styles.contactItem}>{resume.personal.linkedin}</Text>}
-            {resume.personal.github && <Text style={styles.contactItem}>{resume.personal.github}</Text>}
-            {resume.personal.website && <Text style={styles.contactItem}>{resume.personal.website}</Text>}
-            {theme.companyWebsite && <Text style={styles.contactItem}>{theme.companyWebsite}</Text>}
+            {theme.companyEmail && (
+              <View style={styles.contactCell}>
+                <IconMail color={theme.colors.secondary} />
+                <Text style={styles.contactItem}>{theme.companyEmail}</Text>
+              </View>
+            )}
+            {resume.personal.phone && (
+              <View style={styles.contactCell}>
+                <IconPhone color={theme.colors.secondary} />
+                <Text style={styles.contactItem}>{resume.personal.phone}</Text>
+              </View>
+            )}
+            {resume.personal.location && (
+              <View style={styles.contactCell}>
+                <IconMapPin color={theme.colors.secondary} />
+                <Text style={styles.contactItem}>{resume.personal.location}</Text>
+              </View>
+            )}
+            {resume.personal.github && (
+              <View style={styles.contactCell}>
+                <IconGithub color={theme.colors.secondary} />
+                <Text style={styles.contactItem}>{resume.personal.github}</Text>
+              </View>
+            )}
+            {resume.personal.linkedin && (
+              <View style={styles.contactCell}>
+                <IconLinkedin color={theme.colors.secondary} />
+                <Text style={styles.contactItem}>{resume.personal.linkedin}</Text>
+              </View>
+            )}
+            {resume.personal.website && (
+              <View style={styles.contactCell}>
+                <IconGlobe color={theme.colors.secondary} />
+                <Text style={styles.contactItem}>{resume.personal.website}</Text>
+              </View>
+            )}
+            {theme.companyWebsite && (
+              <View style={styles.contactCell}>
+                <IconGlobe color={theme.colors.secondary} />
+                <Text style={styles.contactItem}>{theme.companyWebsite}</Text>
+              </View>
+            )}
           </View>
         </View>
         {logoSrc && (

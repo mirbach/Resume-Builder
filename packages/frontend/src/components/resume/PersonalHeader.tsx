@@ -60,14 +60,14 @@ export default function PersonalHeader({ data, theme }: Props) {
                 <MapPin size={14} /> {data.location}
               </span>
             )}
-            {data.linkedin && (
-              <span className="flex items-center gap-1">
-                <Linkedin size={14} /> {data.linkedin}
-              </span>
-            )}
             {data.github && (
               <span className="flex items-center gap-1">
                 <Github size={14} /> {data.github}
+              </span>
+            )}
+            {data.linkedin && (
+              <span className="flex items-center gap-1">
+                <Linkedin size={14} /> {data.linkedin}
               </span>
             )}
             {data.website && (

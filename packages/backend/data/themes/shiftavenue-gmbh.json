@@ -1,5 +1,5 @@
 {
-  "name": "Sovereign Cyber LLC",
+  "name": "shiftavenue GmbH",
   "colors": {
     "primary": "#2563eb",
     "secondary": "#6b7280",
@@ -37,6 +37,7 @@
     }
   },
   "logo": "/api/uploads/b82c58b6-a9da-45c7-8864-b5d826c0e1c0.png",
-  "companyName": "Sovereign Cyber LLC",
-  "companyWebsite": "company.com"
+  "companyName": "shiftavenue GmbH",
+  "companyWebsite": "shiftavenue.com",
+  "companyEmail": "andreas.mirbach.extern@shifavenue.com"
 }
