@@ -1,5 +1,6 @@
-import type { ProjectEntry, Achievement, EliteCategory } from '../../../lib/types';
+import type { ProjectEntry, Achievement, EliteCategory, Language } from '../../../lib/types';
 import BilingualField from '../BilingualField';
+import CarReviewPanel from './CarReviewPanel';
 import { Plus, Trash2, X, GripVertical, ChevronDown, ChevronRight } from 'lucide-react';
 import { useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
@@ -7,6 +8,7 @@ import { v4 as uuidv4 } from 'uuid';
 interface Props {
   data: ProjectEntry[];
   onChange: (data: ProjectEntry[]) => void;
+  lang?: Language;
 }
 
 const ELITE_CATEGORIES: { value: EliteCategory; label: string; color: string }[] = [
@@ -21,7 +23,7 @@ function newAchievement(): Achievement {
   return { id: uuidv4(), challenge: { en: '', de: '' }, action: { en: '', de: '' }, result: { en: '', de: '' } };
 }
 
-export default function ProjectsForm({ data, onChange }: Props) {
+export default function ProjectsForm({ data, onChange, lang = 'en' }: Props) {
   const [expandedEntries, setExpandedEntries] = useState<Set<string>>(new Set(data.map((e) => e.id)));
   const [newTechs, setNewTechs] = useState<Record<string, string>>({});
   const inputClasses =
@@ -287,6 +289,18 @@ export default function ProjectsForm({ data, onChange }: Props) {
                       multiline
                       rows={4}
                       placeholder={{ en: 'What was the measurable outcome?', de: 'Was war das messbare Ergebnis?' }}
+                    />
+                    <CarReviewPanel
+                      challenge={ach.challenge[lang]}
+                      action={ach.action[lang]}
+                      result={ach.result[lang]}
+                      lang={lang}
+                      onApply={(field, text) =>
+                        updateAchievement(entryIndex, achIndex, {
+                          ...ach,
+                          [field]: { ...ach[field], [lang]: text },
+                        })
+                      }
                     />
                   </div>
                 ))}

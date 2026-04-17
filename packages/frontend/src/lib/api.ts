@@ -4,6 +4,7 @@ import type {
   ThemeListItem,
   AppSettings,
   ApiResponse,
+  CarReviewResult,
 } from './types';
 
 const API_BASE = '/api';
@@ -127,5 +128,18 @@ export async function translateText(text: string, from: 'en' | 'de', to: 'en' | 
   return request<string>('/translate', {
     method: 'POST',
     body: JSON.stringify({ text, from, to }),
+  });
+}
+
+// AI CAR Review
+export async function reviewCar(
+  challenge: string,
+  action: string,
+  result: string,
+  lang: 'en' | 'de' = 'en'
+): Promise<CarReviewResult> {
+  return request<CarReviewResult>('/ai/review', {
+    method: 'POST',
+    body: JSON.stringify({ challenge, action, result, lang }),
   });
 }

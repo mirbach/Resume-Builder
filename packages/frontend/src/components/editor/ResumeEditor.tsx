@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import type { ResumeData } from '../../lib/types';
+import type { ResumeData, Language } from '../../lib/types';
 import PersonalInfoForm from './forms/PersonalInfoForm';
 import SummaryForm from './forms/SummaryForm';
 import ExperienceForm from './forms/ExperienceForm';
@@ -42,9 +42,10 @@ const ACTIVE_TAB_KEY = 'resume_editor_tab';
 interface Props {
   data: ResumeData;
   onChange: (data: ResumeData) => void;
+  lang?: Language;
 }
 
-export default function ResumeEditor({ data, onChange }: Props) {
+export default function ResumeEditor({ data, onChange, lang = 'en' }: Props) {
   const [activeTab, setActiveTab] = useState<TabId>(() => {
     const storedTab = sessionStorage.getItem(ACTIVE_TAB_KEY);
     return TABS.some((tab) => tab.id === storedTab) ? (storedTab as TabId) : 'personal';
@@ -75,6 +76,7 @@ export default function ResumeEditor({ data, onChange }: Props) {
           <ExperienceForm
             data={data.experience}
             onChange={(experience) => onChange({ ...data, experience })}
+            lang={lang}
           />
         );
       case 'education':
@@ -110,6 +112,7 @@ export default function ResumeEditor({ data, onChange }: Props) {
           <ProjectsForm
             data={data.projects}
             onChange={(projects) => onChange({ ...data, projects })}
+            lang={lang}
           />
         );
       case 'products':

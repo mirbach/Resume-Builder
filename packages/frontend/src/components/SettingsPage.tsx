@@ -1,11 +1,17 @@
 import { useState, useEffect } from 'react';
-import type { AppSettings, AuthProvider } from '../lib/types';
+import type { AppSettings, AuthProvider, AiProvider } from '../lib/types';
 import { getSettings, saveSettings } from '../lib/api';
 import { Save, Loader2, ArrowLeft } from 'lucide-react';
 
 interface Props {
   onClose: () => void;
 }
+
+const AI_PROVIDERS: { value: AiProvider; label: string; defaultModel: string; keyPlaceholder: string; docsUrl: string }[] = [
+  { value: 'openai', label: 'OpenAI (ChatGPT)', defaultModel: 'gpt-4o-mini', keyPlaceholder: 'sk-...', docsUrl: 'https://platform.openai.com/api-keys' },
+  { value: 'grok', label: 'xAI (Grok)', defaultModel: 'grok-3-mini', keyPlaceholder: 'xai-...', docsUrl: 'https://console.x.ai/' },
+  { value: 'google', label: 'Google AI (Gemini)', defaultModel: 'gemini-2.0-flash', keyPlaceholder: 'AIza...', docsUrl: 'https://aistudio.google.com/app/apikey' },
+];
 
 const PROVIDERS: { value: AuthProvider; label: string }[] = [
   { value: 'entra-id', label: 'Microsoft Entra ID' },
@@ -131,6 +137,76 @@ export default function SettingsPage({ onClose }: Props) {
             </div>
           </>
         )}
+      </div>
+
+      {/* AI Assistant */}
+      <div className="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-6 space-y-4">
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-white">AI Assistant</h3>
+        <p className="text-sm text-gray-500 dark:text-gray-400">
+          Enable AI-powered CAR review and phrasing suggestions. Choose a provider and enter your API key.
+        </p>
+        <div>
+          <label htmlFor="ai-provider" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Provider</label>
+          <select
+            id="ai-provider"
+            className={inputClasses}
+            value={settings.ai?.provider ?? 'openai'}
+            onChange={(e) =>
+              setSettings({
+                ...settings,
+                ai: {
+                  provider: e.target.value as AiProvider,
+                  apiKey: settings.ai?.apiKey ?? '',
+                  model: '',
+                },
+              })
+            }
+          >
+            {AI_PROVIDERS.map((p) => (
+              <option key={p.value} value={p.value}>{p.label}</option>
+            ))}
+          </select>
+        </div>
+        {(() => {
+          const providerInfo = AI_PROVIDERS.find((p) => p.value === (settings.ai?.provider ?? 'openai'));
+          return (
+            <>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  API Key{' '}
+                  {providerInfo && (
+                    <a href={providerInfo.docsUrl} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline text-xs font-normal">
+                      Get key ↗
+                    </a>
+                  )}
+                </label>
+                <input
+                  type="password"
+                  className={inputClasses}
+                  value={settings.ai?.apiKey ?? ''}
+                  onChange={(e) =>
+                    setSettings({ ...settings, ai: { provider: settings.ai?.provider ?? 'openai', apiKey: e.target.value, model: settings.ai?.model ?? '' } })
+                  }
+                  placeholder={providerInfo?.keyPlaceholder ?? ''}
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  Model <span className="font-normal text-gray-400">(leave blank for default: {providerInfo?.defaultModel})</span>
+                </label>
+                <input
+                  type="text"
+                  className={inputClasses}
+                  value={settings.ai?.model ?? ''}
+                  onChange={(e) =>
+                    setSettings({ ...settings, ai: { provider: settings.ai?.provider ?? 'openai', apiKey: settings.ai?.apiKey ?? '', model: e.target.value } })
+                  }
+                  placeholder={providerInfo?.defaultModel ?? ''}
+                />
+              </div>
+            </>
+          );
+        })()}
       </div>
 
       <div className="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-6 space-y-4">

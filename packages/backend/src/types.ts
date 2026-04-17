@@ -186,9 +186,18 @@ export interface TranslationSettings {
   deeplApiKey: string;
 }
 
+export type AiProvider = 'openai' | 'grok' | 'google';
+
+export interface AiSettings {
+  provider: AiProvider;
+  apiKey: string;
+  model: string;
+}
+
 export interface AppSettings {
   auth: AuthSettings;
   translation: TranslationSettings;
+  ai: AiSettings;
 }
 
 // ============================================

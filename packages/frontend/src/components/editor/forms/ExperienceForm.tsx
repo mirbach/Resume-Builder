@@ -1,5 +1,6 @@
-import type { ExperienceEntry, Achievement, EliteCategory } from '../../../lib/types';
+import type { ExperienceEntry, Achievement, EliteCategory, Language } from '../../../lib/types';
 import BilingualField from '../BilingualField';
+import CarReviewPanel from './CarReviewPanel';
 import { Plus, Trash2, GripVertical, ChevronDown, ChevronRight } from 'lucide-react';
 import { useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
@@ -7,6 +8,7 @@ import { v4 as uuidv4 } from 'uuid';
 interface Props {
   data: ExperienceEntry[];
   onChange: (data: ExperienceEntry[]) => void;
+  lang?: Language;
 }
 
 const ELITE_CATEGORIES: { value: EliteCategory; label: string; color: string }[] = [
@@ -37,7 +39,7 @@ function newExperience(): ExperienceEntry {
   };
 }
 
-export default function ExperienceForm({ data, onChange }: Props) {
+export default function ExperienceForm({ data, onChange, lang = 'en' }: Props) {
   const [expandedEntries, setExpandedEntries] = useState<Set<string>>(
     new Set(data.map((e) => e.id))
   );
@@ -301,6 +303,18 @@ export default function ExperienceForm({ data, onChange }: Props) {
                         en: 'What was the measurable outcome?',
                         de: 'Was war das messbare Ergebnis?',
                       }}
+                    />
+                    <CarReviewPanel
+                      challenge={ach.challenge[lang]}
+                      action={ach.action[lang]}
+                      result={ach.result[lang]}
+                      lang={lang}
+                      onApply={(field, text) =>
+                        updateAchievement(entryIndex, achIndex, {
+                          ...ach,
+                          [field]: { ...ach[field], [lang]: text },
+                        })
+                      }
                     />
                   </div>
                 ))}

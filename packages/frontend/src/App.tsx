@@ -489,7 +489,7 @@ export default function App() {
           {/* Split pane */}
           <div className="flex flex-1 overflow-hidden">
             <div className="w-1/2 border-r border-gray-200 dark:border-gray-700 overflow-hidden">
-              <ResumeEditor data={resumeData} onChange={handleResumeChange} />
+              <ResumeEditor data={resumeData} onChange={handleResumeChange} lang={language} />
             </div>
             <div className="w-1/2 overflow-y-auto p-4 bg-gray-200 dark:bg-gray-700">
               <ScaledPreview resume={resolved} theme={theme} lang={language} />

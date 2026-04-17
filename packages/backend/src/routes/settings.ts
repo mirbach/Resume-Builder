@@ -21,6 +21,7 @@ router.get('/', async (_req: Request, res: Response) => {
         scopes: ['openid', 'profile', 'email'],
       },
       translation: { deeplApiKey: '' },
+      ai: { provider: 'openai', apiKey: '', model: '' },
     };
     res.json({ success: true, data: defaults });
   }
