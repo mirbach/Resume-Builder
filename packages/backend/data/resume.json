@@ -52,11 +52,11 @@
         {
           "id": "ach-1",
           "challenge": {
-            "en": "Legacy monolithic application causing frequent outages and 4-hour deployment cycles",
+            "en": "Legacy monolithic application serving 500K users caused frequent outages and 4-hour deployment cycles, risking €500K quarterly revenue",
             "de": "Veraltete monolithische Anwendung verursachte häufige Ausfälle und 4-stündige Deployment-Zyklen"
           },
           "action": {
-            "en": "Led migration to microservices architecture using Kubernetes, implemented CI/CD pipelines with automated testing",
+            "en": "Led team of 8 engineers in migrating legacy monolith to Kubernetes-based microservices; designed and implemented CI/CD pipelines with 80% test automation coverage",
             "de": "Leitete die Migration zur Microservices-Architektur mit Kubernetes, implementierte CI/CD-Pipelines mit automatisierten Tests"
           },
           "result": {
@@ -119,8 +119,8 @@
         {
           "id": "927460fd-8e1d-4292-a288-c2d9d0a4d0fa",
           "challenge": {
-            "en": "this is an english text",
-            "de": "dies ist ein englischer Text"
+            "en": "this is an English text which will be automatically translated",
+            "de": "dies ist ein englischer Text, der automatisch übersetzt wird"
           },
           "action": {
             "en": "",
@@ -132,23 +132,6 @@
           }
         }
       ]
-    },
-    {
-      "id": "a6000d6a-6a48-490d-9b25-807f80d0b6a3",
-      "company": "",
-      "role": {
-        "en": "",
-        "de": ""
-      },
-      "period": {
-        "en": "",
-        "de": ""
-      },
-      "location": {
-        "en": "",
-        "de": ""
-      },
-      "achievements": []
     }
   ],
   "education": [

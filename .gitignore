@@ -2,4 +2,5 @@ node_modules/
 dist/
 packages/backend/dist/
 packages/backend/data/uploads/
+packages/backend/data/settings.json
 *.tsbuildinfo
