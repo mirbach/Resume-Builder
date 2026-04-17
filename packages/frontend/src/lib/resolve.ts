@@ -63,7 +63,7 @@ export function resolveResume(data: ResumeData, lang: Language): ResolvedResume 
     })),
     projects: data.projects.map((p) => ({
       id: p.id,
-      name: p.name,
+      name: resolve(p.name, lang),
       company: p.company,
       description: resolve(p.description, lang),
       technologies: p.technologies,

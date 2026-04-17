@@ -34,7 +34,7 @@ export default function ProjectsForm({ data, onChange }: Props) {
   }
 
   function addEntry() {
-    const entry: ProjectEntry = { id: uuidv4(), name: '', description: { en: '', de: '' }, technologies: [], achievements: [] };
+    const entry: ProjectEntry = { id: uuidv4(), name: { en: '', de: '' }, description: { en: '', de: '' }, technologies: [], achievements: [] };
     setExpandedEntries((prev) => new Set(prev).add(entry.id));
     onChange([...data, entry]);
   }
@@ -120,7 +120,7 @@ export default function ProjectsForm({ data, onChange }: Props) {
             )}
             <div className="flex-1">
               <span className="font-medium text-gray-900 dark:text-gray-100">
-                {entry.name || 'New Project'}
+                {entry.name.en || entry.name.de || 'New Project'}
               </span>
             </div>
             <div className="flex items-center gap-1">
@@ -135,17 +135,13 @@ export default function ProjectsForm({ data, onChange }: Props) {
           {/* Entry Body */}
           {expandedEntries.has(entry.id) && (
             <div className="border-t border-gray-100 px-4 py-4 space-y-3">
+              <BilingualField
+                label="Project Name"
+                value={entry.name}
+                onChange={(name) => updateEntry(entryIndex, { ...entry, name })}
+                placeholder={{ en: 'Project name', de: 'Projektname' }}
+              />
               <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">Project Name</label>
-                  <input
-                    type="text"
-                    className={inputClasses}
-                    value={entry.name}
-                    placeholder="Project name"
-                    onChange={(e) => updateEntry(entryIndex, { ...entry, name: e.target.value })}
-                  />
-                </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700">Company (optional)</label>
                   <input
@@ -156,16 +152,16 @@ export default function ProjectsForm({ data, onChange }: Props) {
                     onChange={(e) => updateEntry(entryIndex, { ...entry, company: e.target.value || undefined })}
                   />
                 </div>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700">Link (optional)</label>
-                <input
-                  type="text"
-                  className={inputClasses}
-                  value={entry.link || ''}
-                  onChange={(e) => updateEntry(entryIndex, { ...entry, link: e.target.value || undefined })}
-                  placeholder="github.com/..."
-                />
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">Link (optional)</label>
+                  <input
+                    type="text"
+                    className={inputClasses}
+                    value={entry.link || ''}
+                    onChange={(e) => updateEntry(entryIndex, { ...entry, link: e.target.value || undefined })}
+                    placeholder="github.com/..."
+                  />
+                </div>
               </div>
 
               <BilingualField

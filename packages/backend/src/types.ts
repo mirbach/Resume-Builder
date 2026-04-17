@@ -68,7 +68,7 @@ export interface LanguageEntry {
 
 export interface ProjectEntry {
   id: string;
-  name: string;
+  name: BilingualText;
   company?: string;
   description: BilingualText;
   technologies: string[];
