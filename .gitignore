@@ -4,4 +4,7 @@ packages/backend/dist/
 packages/backend/data/uploads/
 packages/backend/data/settings.json
 packages/backend/data/resume.json
+# Custom themes are runtime data; only the sanitized default seed is tracked
+packages/backend/data/themes/*.json
+!packages/backend/data/themes/default.json
 *.tsbuildinfo

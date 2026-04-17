@@ -1,5 +1,5 @@
 {
-  "name": "Sovereign Cyber LLC",
+  "name": "default",
   "colors": {
     "primary": "#2563eb",
     "secondary": "#6b7280",
@@ -36,8 +36,8 @@
       "left": 40
     }
   },
-  "companyWebsite": "sovereigncyber.de",
-  "logo": "/api/uploads/51b4cc55-9567-436c-8597-c5ed626d8f5f.png",
-  "companyName": "Sovereign Cyber LLC",
-  "companyEmail": "andreas.mirbach@sovereigncyber.de"
+  "companyWebsite": "",
+  "logo": "",
+  "companyName": "",
+  "companyEmail": ""
 }
