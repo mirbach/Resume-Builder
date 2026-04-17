@@ -6,14 +6,18 @@ import { getDataPath } from '../lib/storage.js';
 
 const UPLOADS_DIR = getDataPath('uploads');
 
+// SVG is intentionally excluded: SVGs can contain embedded scripts (stored XSS) and
+// are not needed for profile photos or logos (PNG/JPG/WebP are sufficient). (A03)
+const ALLOWED_EXTS = ['.jpg', '.jpeg', '.png', '.gif', '.webp'];
+const ALLOWED_MIMES = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+
 const storage = multer.diskStorage({
   destination: (_req, _file, cb) => {
     cb(null, UPLOADS_DIR);
   },
   filename: (_req, file, cb) => {
     const ext = path.extname(file.originalname).toLowerCase();
-    const allowedExts = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.svg'];
-    if (!allowedExts.includes(ext)) {
+    if (!ALLOWED_EXTS.includes(ext)) {
       cb(new Error('Invalid file type'), '');
       return;
     }
@@ -25,8 +29,7 @@ const upload = multer({
   storage,
   limits: { fileSize: 5 * 1024 * 1024 }, // 5MB max
   fileFilter: (_req, file, cb) => {
-    const allowedMimes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/svg+xml'];
-    if (allowedMimes.includes(file.mimetype)) {
+    if (ALLOWED_MIMES.includes(file.mimetype)) {
       cb(null, true);
     } else {
       cb(new Error('Invalid file type'));

@@ -12,8 +12,13 @@ router.post('/', async (req: Request, res: Response) => {
     if (!text || !from || !to) {
       return res.status(400).json({ success: false, error: 'Missing required fields: text, from, to' });
     }
+    // Validate enum values (A03 — prevent injection via lang params)
     if (!['en', 'de'].includes(from) || !['en', 'de'].includes(to)) {
       return res.status(400).json({ success: false, error: 'Unsupported language. Only "en" and "de" are supported.' });
+    }
+    // Limit text size to prevent API key exhaustion (A04)
+    if (typeof text !== 'string' || text.length > 10_000) {
+      return res.status(400).json({ success: false, error: 'Text exceeds maximum allowed length of 10,000 characters.' });
     }
 
     const settings = await readJson<AppSettings>('settings.json').catch(() => null);

@@ -7,6 +7,16 @@ import type {
   CarReviewResult,
 } from './types';
 
+export interface KeysConfigured {
+  deeplApiKey: boolean;
+  aiApiKey: boolean;
+}
+
+export interface SettingsResponse {
+  settings: AppSettings;
+  keysConfigured: KeysConfigured;
+}
+
 const API_BASE = '/api';
 
 let _authToken: string | null = null;
@@ -112,12 +122,25 @@ export async function uploadFile(
 }
 
 // Settings
-export async function getSettings(): Promise<AppSettings> {
-  return request<AppSettings>('/settings');
+async function requestSettingsRaw(url: string, options?: RequestInit): Promise<SettingsResponse> {
+  const headers: Record<string, string> = {};
+  if (!(options?.body instanceof FormData)) headers['Content-Type'] = 'application/json';
+  if (_authToken) headers.Authorization = `Bearer ${_authToken}`;
+  const res = await fetch(`${API_BASE}${url}`, { ...options, headers: { ...headers, ...(options?.headers as Record<string, string> | undefined) } });
+  const json = (await res.json()) as ApiResponse<AppSettings> & { keysConfigured?: KeysConfigured };
+  if (!json.success) throw new Error(json.error || 'API request failed');
+  return {
+    settings: json.data as AppSettings,
+    keysConfigured: json.keysConfigured ?? { deeplApiKey: false, aiApiKey: false },
+  };
 }
 
-export async function saveSettings(settings: AppSettings): Promise<AppSettings> {
-  return request<AppSettings>('/settings', {
+export async function getSettings(): Promise<SettingsResponse> {
+  return requestSettingsRaw('/settings');
+}
+
+export async function saveSettings(settings: AppSettings): Promise<SettingsResponse> {
+  return requestSettingsRaw('/settings', {
     method: 'PUT',
     body: JSON.stringify(settings),
   });

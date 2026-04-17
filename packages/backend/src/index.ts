@@ -1,5 +1,6 @@
 import express from 'express';
 import cors from 'cors';
+import helmet from 'helmet';
 import resumeRoutes from './routes/resume.js';
 import themesRoutes from './routes/themes.js';
 import uploadsRoutes from './routes/uploads.js';
@@ -11,12 +12,19 @@ import { authMiddleware } from './middleware/auth.js';
 const app = express();
 const PORT = process.env.PORT || 3001;
 
+// Security headers (A05)
+app.use(helmet({
+  // CSP is managed by the frontend Vite build; disable the header here
+  // so helmet doesn't conflict with Vite dev server responses.
+  contentSecurityPolicy: false,
+}));
+
 // Middleware
 app.use(cors({
   origin: process.env.CORS_ORIGIN || 'http://localhost:5173',
   credentials: true,
 }));
-app.use(express.json({ limit: '10mb' }));
+app.use(express.json({ limit: '1mb' }));
 
 // Auth middleware (only blocks when auth is enabled in settings)
 app.use('/api', authMiddleware);

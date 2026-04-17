@@ -107,8 +107,17 @@ router.post('/review', async (req: Request, res: Response) => {
   try {
     const { challenge, action, result, lang = 'en' } = req.body as CarReviewRequest;
 
+    // Validate lang enum at runtime (A03)
+    if (lang !== 'en' && lang !== 'de') {
+      return res.status(400).json({ success: false, error: 'Unsupported language. Only "en" and "de" are supported.' });
+    }
     if (!challenge?.trim() && !action?.trim() && !result?.trim()) {
       return res.status(400).json({ success: false, error: 'At least one CAR field must have content.' });
+    }
+    // Limit field sizes to prevent API key exhaustion (A04)
+    const MAX_FIELD = 2_000;
+    if ((challenge?.length ?? 0) > MAX_FIELD || (action?.length ?? 0) > MAX_FIELD || (result?.length ?? 0) > MAX_FIELD) {
+      return res.status(400).json({ success: false, error: 'Each CAR field must not exceed 2,000 characters.' });
     }
 
     const settings = await readJson<AppSettings>('settings.json').catch(() => null);

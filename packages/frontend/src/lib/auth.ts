@@ -129,7 +129,10 @@ export function clearToken() {
 
 export function validateOAuthState(returned: string | null): boolean {
   const stored = sessionStorage.getItem(STATE_KEY);
-  return !!stored && stored === returned;
+  if (!stored || stored !== returned) return false;
+  // Consume nonce immediately — prevents reuse within the same session
+  sessionStorage.removeItem(STATE_KEY);
+  return true;
 }
 
 // ---- RP-initiated logout ----

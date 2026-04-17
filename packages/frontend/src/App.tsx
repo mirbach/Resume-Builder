@@ -93,8 +93,8 @@ export default function App() {
         if (apiToken) setAuthToken(apiToken);
 
         // Always load settings first (settings endpoint is public)
-        const settings = await getSettings().catch(() => null);
-        setAppSettings(settings);
+        const settingsResp = await getSettings().catch(() => null);
+        setAppSettings(settingsResp?.settings ?? null);
 
         // If this is an OAuth callback (?code= present), skip the data fetch —
         // the OAuth callback effect will exchange the code, then load data.
@@ -127,7 +127,7 @@ export default function App() {
 
         // Restore editor mode on refresh when the session is still authenticated.
         const wantsEditor = sessionStorage.getItem(APP_MODE_KEY) === 'editor';
-        if (wantsEditor && (!settings?.auth.enabled || apiToken)) {
+        if (wantsEditor && (!settingsResp?.settings.auth.enabled || apiToken)) {
           setMode('editor');
         }
       } catch (err) {

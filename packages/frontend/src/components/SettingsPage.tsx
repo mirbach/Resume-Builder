@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import type { AppSettings, AuthProvider, AiProvider } from '../lib/types';
 import { getSettings, saveSettings } from '../lib/api';
-import { Save, Loader2, ArrowLeft } from 'lucide-react';
+import type { KeysConfigured } from '../lib/api';
+import { Save, Loader2, ArrowLeft, CheckCircle } from 'lucide-react';
 
 interface Props {
   onClose: () => void;
@@ -22,6 +23,7 @@ const PROVIDERS: { value: AuthProvider; label: string }[] = [
 
 export default function SettingsPage({ onClose }: Props) {
   const [settings, setSettings] = useState<AppSettings | null>(null);
+  const [keysConfigured, setKeysConfigured] = useState<KeysConfigured>({ deeplApiKey: false, aiApiKey: false });
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
 
@@ -29,14 +31,21 @@ export default function SettingsPage({ onClose }: Props) {
     'w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none';
 
   useEffect(() => {
-    getSettings().then(setSettings).catch(console.error);
+    getSettings()
+      .then(({ settings, keysConfigured }) => {
+        setSettings(settings);
+        setKeysConfigured(keysConfigured);
+      })
+      .catch(console.error);
   }, []);
 
   async function handleSave() {
     if (!settings) return;
     setSaving(true);
     try {
-      await saveSettings(settings);
+      const { settings: saved_, keysConfigured: kc } = await saveSettings(settings);
+      setSettings(saved_);
+      setKeysConfigured(kc);
       setSaved(true);
       setTimeout(() => setSaved(false), 2000);
     } catch (e) {
@@ -180,6 +189,11 @@ export default function SettingsPage({ onClose }: Props) {
                     </a>
                   )}
                 </label>
+                {keysConfigured.aiApiKey && (
+                  <p className="flex items-center gap-1 text-xs text-green-600 dark:text-green-400 mb-1">
+                    <CheckCircle size={12} /> Key configured — leave blank to keep existing
+                  </p>
+                )}
                 <input
                   type="password"
                   className={inputClasses}
@@ -187,7 +201,7 @@ export default function SettingsPage({ onClose }: Props) {
                   onChange={(e) =>
                     setSettings({ ...settings, ai: { provider: settings.ai?.provider ?? 'openai', apiKey: e.target.value, model: settings.ai?.model ?? '' } })
                   }
-                  placeholder={providerInfo?.keyPlaceholder ?? ''}
+                  placeholder={keysConfigured.aiApiKey ? '••••••••' : (providerInfo?.keyPlaceholder ?? '')}
                 />
               </div>
               <div>
@@ -226,6 +240,11 @@ export default function SettingsPage({ onClose }: Props) {
         </p>
         <div>
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">DeepL API Key</label>
+          {keysConfigured.deeplApiKey && (
+            <p className="flex items-center gap-1 text-xs text-green-600 dark:text-green-400 mb-1">
+              <CheckCircle size={12} /> Key configured — leave blank to keep existing
+            </p>
+          )}
           <input
             type="password"
             className={inputClasses}
@@ -233,7 +252,7 @@ export default function SettingsPage({ onClose }: Props) {
             onChange={(e) =>
               setSettings({ ...settings, translation: { deeplApiKey: e.target.value } })
             }
-            placeholder="your-deepl-api-key:fx"
+            placeholder={keysConfigured.deeplApiKey ? '••••••••' : 'your-deepl-api-key:fx'}
           />
         </div>
       </div>
