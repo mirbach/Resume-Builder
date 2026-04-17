@@ -442,6 +442,7 @@ export default function App() {
             accept=".json,application/json"
             className="hidden"
             onChange={handleImport}
+            title="Import resume JSON file"
           />
           <button
             aria-label="Toggle dark mode"
