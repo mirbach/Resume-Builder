@@ -182,8 +182,13 @@ export interface AuthSettings {
   scopes: string[];
 }
 
+export interface TranslationSettings {
+  deeplApiKey: string;
+}
+
 export interface AppSettings {
   auth: AuthSettings;
+  translation: TranslationSettings;
 }
 
 // ============================================

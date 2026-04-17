@@ -4,6 +4,7 @@ import resumeRoutes from './routes/resume.js';
 import themesRoutes from './routes/themes.js';
 import uploadsRoutes from './routes/uploads.js';
 import settingsRoutes from './routes/settings.js';
+import translateRoutes from './routes/translate.js';
 import { authMiddleware } from './middleware/auth.js';
 
 const app = express();
@@ -25,6 +26,7 @@ app.use('/api/themes', themesRoutes);
 app.use('/api/upload', uploadsRoutes);
 app.use('/api/uploads', uploadsRoutes);
 app.use('/api/settings', settingsRoutes);
+app.use('/api/translate', translateRoutes);
 
 // Health check
 app.get('/api/health', (_req, res) => {

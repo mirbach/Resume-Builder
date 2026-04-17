@@ -40,6 +40,7 @@ interface AuthSettings {
 
 interface AppSettings {
   auth: AuthSettings;
+  translation: { deeplApiKey: string };
 }
 
 // ---- JWT / JWKS verification (Web Crypto API — Cloudflare Workers compatible) ----
@@ -232,6 +233,7 @@ export const DEFAULT_SETTINGS: AppSettings = {
     redirectUri: 'https://your-site.pages.dev',
     scopes: ['openid', 'profile', 'email'],
   },
+  translation: { deeplApiKey: '' },
 };
 
 export const DEFAULT_THEME = {

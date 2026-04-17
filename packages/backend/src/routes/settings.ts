@@ -20,6 +20,7 @@ router.get('/', async (_req: Request, res: Response) => {
         redirectUri: 'http://localhost:5173/callback',
         scopes: ['openid', 'profile', 'email'],
       },
+      translation: { deeplApiKey: '' },
     };
     res.json({ success: true, data: defaults });
   }

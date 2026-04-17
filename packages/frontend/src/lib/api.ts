@@ -121,3 +121,11 @@ export async function saveSettings(settings: AppSettings): Promise<AppSettings> 
     body: JSON.stringify(settings),
   });
 }
+
+// Translation
+export async function translateText(text: string, from: 'en' | 'de', to: 'en' | 'de'): Promise<string> {
+  return request<string>('/translate', {
+    method: 'POST',
+    body: JSON.stringify({ text, from, to }),
+  });
+}

@@ -115,7 +115,23 @@
         "en": "",
         "de": ""
       },
-      "achievements": []
+      "achievements": [
+        {
+          "id": "927460fd-8e1d-4292-a288-c2d9d0a4d0fa",
+          "challenge": {
+            "en": "this is an english text",
+            "de": "dies ist ein englischer Text"
+          },
+          "action": {
+            "en": "",
+            "de": ""
+          },
+          "result": {
+            "en": "",
+            "de": ""
+          }
+        }
+      ]
     },
     {
       "id": "a6000d6a-6a48-490d-9b25-807f80d0b6a3",

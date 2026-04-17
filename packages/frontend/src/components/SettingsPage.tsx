@@ -133,6 +133,35 @@ export default function SettingsPage({ onClose }: Props) {
         )}
       </div>
 
+      <div className="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-6 space-y-4">
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Translation (DeepL)</h3>
+        <p className="text-sm text-gray-500 dark:text-gray-400">
+          Enter your DeepL API key to enable automatic translation between English and German.
+          Get a free key at{' '}
+          <a
+            href="https://www.deepl.com/pro#developer"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-blue-600 hover:underline"
+          >
+            deepl.com/pro
+          </a>
+          .
+        </p>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">DeepL API Key</label>
+          <input
+            type="password"
+            className={inputClasses}
+            value={settings.translation?.deeplApiKey ?? ''}
+            onChange={(e) =>
+              setSettings({ ...settings, translation: { deeplApiKey: e.target.value } })
+            }
+            placeholder="your-deepl-api-key:fx"
+          />
+        </div>
+      </div>
+
       <div className="flex items-center gap-3">
         <button
           onClick={handleSave}
