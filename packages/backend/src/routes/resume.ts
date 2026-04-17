@@ -5,9 +5,15 @@ import type { ResumeData } from '../types.js';
 const router = Router();
 
 // GET /api/resume - get the full bilingual resume data
+// Falls back to resume.example.json on a fresh clone where resume.json doesn't exist yet.
 router.get('/', async (_req: Request, res: Response) => {
   try {
-    const data = await readJson<ResumeData>('resume.json');
+    let data: ResumeData;
+    try {
+      data = await readJson<ResumeData>('resume.json');
+    } catch {
+      data = await readJson<ResumeData>('resume.example.json');
+    }
     res.json({ success: true, data });
   } catch {
     res.status(404).json({ success: false, error: 'Resume data not found' });

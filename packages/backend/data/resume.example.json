@@ -1,0 +1,227 @@
+{
+  "personal": {
+    "name": "Max Mustermann",
+    "title": {
+      "en": "Cloud Solution Architect",
+      "de": "Cloud Solution Architekt"
+    },
+    "email": "max.mustermann@example.com",
+    "phone": "+49 123 456789",
+    "location": {
+      "en": "Berlin, Germany",
+      "de": "Berlin, Deutschland"
+    },
+    "linkedin": "linkedin.com/in/maxmustermann",
+    "photo": ""
+  },
+  "summary": {
+    "en": "Experienced cloud architect with 10+ years of expertise in building scalable distributed systems and leading cross-functional teams. Passionate about cloud-native architecture, DevOps practices, and mentoring engineers. Proven track record of delivering high-impact projects that drive measurable business value.",
+    "de": "Erfahrener Cloud-Architekt mit über 10 Jahren Expertise im Aufbau skalierbarer verteilter Systeme und der Leitung funktionsübergreifender Teams. Leidenschaftlich für Cloud-native Architektur, DevOps-Praktiken und die Förderung von Entwicklern."
+  },
+  "experience": [
+    {
+      "id": "exp-1",
+      "company": "Example Corp GmbH",
+      "role": {
+        "en": "Senior Cloud Architect",
+        "de": "Senior Cloud Architekt"
+      },
+      "period": {
+        "en": "2020 - Present",
+        "de": "2020 - Heute"
+      },
+      "location": {
+        "en": "Berlin, Germany",
+        "de": "Berlin, Deutschland"
+      },
+      "achievements": [
+        {
+          "id": "ach-1",
+          "challenge": {
+            "en": "Legacy monolithic application serving 500K users caused frequent outages and 4-hour deployment cycles, risking €500K quarterly revenue",
+            "de": "Veraltete monolithische Anwendung verursachte häufige Ausfälle und 4-stündige Deployment-Zyklen mit Risiko für 500K€ Quartalsumsatz"
+          },
+          "action": {
+            "en": "Led team of 8 engineers in migrating legacy monolith to Kubernetes-based microservices; designed and implemented CI/CD pipelines with 80% test automation coverage",
+            "de": "Leitete die Migration zur Microservices-Architektur mit Kubernetes, implementierte CI/CD-Pipelines mit 80% Test-Automatisierungsabdeckung"
+          },
+          "result": {
+            "en": "Reduced deployment time by 95% (from 4 hours to 12 minutes), achieved 99.9% uptime, saving €200K annually in downtime costs",
+            "de": "Reduzierte die Deployment-Zeit um 95% (von 4 Stunden auf 12 Minuten), erreichte 99,9% Verfügbarkeit, Einsparung von 200.000€ jährlich"
+          },
+          "eliteCategory": "transformation"
+        },
+        {
+          "id": "ach-2",
+          "challenge": {
+            "en": "Team of 5 junior developers lacking consistent coding standards and review processes, leading to high defect rates",
+            "de": "Team von 5 Junior-Entwicklern ohne einheitliche Coding-Standards, was zu hohen Fehlerraten führte"
+          },
+          "action": {
+            "en": "Established code review guidelines, introduced pair programming sessions, and created an internal knowledge base with best practices",
+            "de": "Etablierte Code-Review-Richtlinien, führte Pair-Programming-Sessions ein und erstellte eine interne Wissensdatenbank"
+          },
+          "result": {
+            "en": "Improved code quality metrics by 40%, reduced bug rate by 60%, and accelerated onboarding time from 3 months to 4 weeks",
+            "de": "Verbesserte Code-Qualitätsmetriken um 40%, reduzierte Fehlerrate um 60%, Einarbeitungszeit von 3 Monaten auf 4 Wochen"
+          },
+          "eliteCategory": "leadership"
+        }
+      ]
+    },
+    {
+      "id": "exp-2",
+      "company": "Startup AG",
+      "role": {
+        "en": "Full Stack Developer",
+        "de": "Full-Stack-Entwickler"
+      },
+      "period": {
+        "en": "2017 - 2020",
+        "de": "2017 - 2020"
+      },
+      "location": {
+        "en": "Munich, Germany",
+        "de": "München, Deutschland"
+      },
+      "achievements": []
+    }
+  ],
+  "education": [
+    {
+      "id": "edu-1",
+      "institution": "Technische Universität Berlin",
+      "degree": {
+        "en": "M.Sc. Computer Science",
+        "de": "M.Sc. Informatik"
+      },
+      "period": {
+        "en": "2013 - 2015",
+        "de": "2013 - 2015"
+      },
+      "details": {
+        "en": "Focus on distributed systems and cloud computing. Thesis: 'Scalable Event Processing in Cloud Environments'",
+        "de": "Schwerpunkt verteilte Systeme und Cloud Computing. Abschlussarbeit: 'Skalierbare Ereignisverarbeitung in Cloud-Umgebungen'"
+      }
+    },
+    {
+      "id": "edu-2",
+      "institution": "Freie Universität Berlin",
+      "degree": {
+        "en": "B.Sc. Computer Science",
+        "de": "B.Sc. Informatik"
+      },
+      "period": {
+        "en": "2010 - 2013",
+        "de": "2010 - 2013"
+      }
+    }
+  ],
+  "skills": [
+    {
+      "id": "skill-1",
+      "category": {
+        "en": "Programming Languages",
+        "de": "Programmiersprachen"
+      },
+      "items": ["TypeScript", "Python", "Go", "C#"]
+    },
+    {
+      "id": "skill-2",
+      "category": {
+        "en": "Frameworks & Libraries",
+        "de": "Frameworks & Bibliotheken"
+      },
+      "items": ["React", "Node.js", "Express", ".NET"]
+    },
+    {
+      "id": "skill-3",
+      "category": {
+        "en": "Cloud & DevOps",
+        "de": "Cloud & DevOps"
+      },
+      "items": ["Azure", "AWS", "Kubernetes", "Docker", "Terraform", "GitHub Actions"]
+    },
+    {
+      "id": "skill-4",
+      "category": {
+        "en": "Databases",
+        "de": "Datenbanken"
+      },
+      "items": ["PostgreSQL", "Azure Cosmos DB", "Redis"]
+    }
+  ],
+  "certifications": [
+    {
+      "id": "cert-1",
+      "name": "Azure Solutions Architect Expert",
+      "issuer": "Microsoft",
+      "date": {
+        "en": "Dec 2023",
+        "de": "Dez 2023"
+      }
+    },
+    {
+      "id": "cert-2",
+      "name": "Certified Kubernetes Administrator (CKA)",
+      "issuer": "CNCF",
+      "date": {
+        "en": "2022",
+        "de": "2022"
+      }
+    }
+  ],
+  "languages": [
+    {
+      "id": "lang-1",
+      "language": {
+        "en": "German",
+        "de": "Deutsch"
+      },
+      "level": {
+        "en": "Native",
+        "de": "Muttersprache"
+      }
+    },
+    {
+      "id": "lang-2",
+      "language": {
+        "en": "English",
+        "de": "Englisch"
+      },
+      "level": {
+        "en": "Fluent (C2)",
+        "de": "Fließend (C2)"
+      }
+    }
+  ],
+  "projects": [
+    {
+      "id": "proj-1",
+      "name": {
+        "en": "CloudDeploy CLI",
+        "de": "CloudDeploy CLI"
+      },
+      "description": {
+        "en": "Open-source CLI tool for simplified multi-cloud deployments with automatic infrastructure provisioning and rollback.",
+        "de": "Open-Source-CLI-Tool für vereinfachte Multi-Cloud-Deployments mit automatischer Infrastruktur-Provisionierung und Rollback."
+      },
+      "technologies": ["Go", "Terraform", "Azure", "AWS"],
+      "link": "github.com/maxmustermann/clouddeploy",
+      "achievements": []
+    }
+  ],
+  "products": [],
+  "references": [
+    {
+      "id": "ref-1",
+      "name": "Dr. Anna Schmidt",
+      "title": {
+        "en": "CTO at Example Corp GmbH",
+        "de": "CTO bei Example Corp GmbH"
+      },
+      "company": "Example Corp GmbH",
+      "contact": "Available upon request"
+    }
+  ]
+}

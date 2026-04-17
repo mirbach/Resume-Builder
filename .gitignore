@@ -3,4 +3,5 @@ dist/
 packages/backend/dist/
 packages/backend/data/uploads/
 packages/backend/data/settings.json
+packages/backend/data/resume.json
 *.tsbuildinfo
