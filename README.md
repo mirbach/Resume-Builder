@@ -99,36 +99,7 @@ npm install
 
 ### Configure
 
-Copy the settings template and fill in your API keys:
-
-```bash
-cp packages/backend/data/settings.example.json packages/backend/data/settings.json
-```
-
-Edit `packages/backend/data/settings.json`:
-
-```json
-{
-  "auth": {
-    "enabled": false,
-    "provider": "generic-oidc",
-    "clientId": "",
-    "authority": "",
-    "redirectUri": "http://localhost:5173/callback",
-    "scopes": ["openid", "profile", "email"]
-  },
-  "translation": {
-    "deeplApiKey": "<your DeepL API key>"
-  },
-  "ai": {
-    "provider": "openai",
-    "apiKey": "<your API key>",
-    "model": "gpt-4o-mini"
-  }
-}
-```
-
-`settings.json` is gitignored — never commit API keys.
+No manual configuration is required to start. The backend serves safe defaults when no `settings.json` exists. Add your API keys through the in-app **Settings** page (⚙ icon in the toolbar) — changes are saved automatically to `packages/backend/data/settings.json`, which is gitignored.
 
 ### Run locally
 
@@ -221,29 +192,86 @@ npm run cf:dev
 
 ## CAR & ELITE Frameworks
 
-The built-in **Frameworks Guide** (? button in the toolbar) explains both frameworks in full with worked examples. A brief summary:
+The built-in **Frameworks Guide** (? button in the toolbar) explains both frameworks in full in English and German. Here is the complete reference.
 
-### CAR — Challenge · Action · Result
+---
 
-Every achievement is a three-part story:
+### CAR Framework — Challenge · Action · Result
 
-- **Challenge** — the specific problem, constraint, or opportunity with quantified context
-- **Action** — what *you* did, using first-person active verbs and concrete steps
-- **Result** — the measurable outcome (%, €/$, time saved, risk reduced)
+The CAR framework is a structured storytelling technique for describing professional achievements. It forces you to move beyond vague job-duty descriptions and present every accomplishment as a mini narrative: what was broken or difficult, what you specifically did about it, and what measurably improved as a result. Recruiters and hiring managers scan for this pattern because it proves impact rather than just presence.
 
-### ELITE — Experience · Leadership · Impact · Transformation · Excellence
+#### C — Challenge
 
-A classification layer applied to each CAR achievement that signals which consulting value dimension it demonstrates:
+Describe the problem, constraint, gap, or opportunity that required action. Be specific: numbers, context, and stakes make the challenge feel real. Avoid generic phrases like "we had issues with performance" — quantify the pain instead.
 
-| Tag | When to use |
+> *"Our CI/CD pipeline averaged 45-minute build times, causing developers to wait over 2 hours per day for feedback and delaying every release by at least one sprint."*
+
+#### A — Action
+
+Describe what you did — not the team, not the project. Use first-person verbs: designed, implemented, negotiated, automated, led. Include the tools, methods, and decisions you made. This is where your skills become visible.
+
+> *"I analysed bottlenecks using BuildKite traces, introduced incremental Docker layer caching, parallelised test suites across 8 agents, and migrated the artifact store from S3 to a local registry."*
+
+#### R — Result
+
+State the measurable outcome. Quantify wherever possible: percentages, time saved, money saved, users unblocked, error rates reduced. If exact numbers are confidential, use relative figures ("reduced by ~60%") or business impact ("enabled fortnightly releases instead of quarterly").
+
+> *"Build time dropped from 45 min to 8 min (–82%), saving the 12-person team ~1.5 hours of idle time per day and allowing us to ship to production daily instead of weekly."*
+
+#### Complete CAR Example
+
+| | |
 |---|---|
-| **Experience** | Deep domain or technical expertise applied to solve a hard problem |
-| **Leadership** | Influencing people or teams beyond formal authority |
-| **Impact** | Quantifiable business outcomes — revenue, cost, time, risk |
-| **Transformation** | Changing how a team, process, or organisation works |
-| **Excellence** | Unusually high standards — zero-defect, awards, reference implementations |
+| **Challenge** | Our CI/CD pipeline averaged 45-minute build times, causing developers to wait over 2 hours per day for feedback and delaying every release by at least one sprint. |
+| **Action** | I analysed bottlenecks using BuildKite traces, introduced incremental Docker layer caching, parallelised test suites across 8 agents, and migrated the artifact store from S3 to a local registry. |
+| **Result** | Build time dropped from 45 min to 8 min (–82%), saving the 12-person team ~1.5 hours of idle time per day and allowing us to ship to production daily instead of weekly. |
 
-Aim for a spread across all five categories in your resume.
+---
+
+### ELITE Framework — Experience · Leadership · Impact · Transformation · Excellence
+
+The ELITE framework is a classification layer applied on top of each CAR achievement. It tells a reader which dimension of consulting value this achievement demonstrates. Senior consultants are expected to show a portfolio across all five categories. Tagging each achievement helps you and the reader quickly see whether your resume is balanced or overweight in one area.
+
+#### E — Experience
+
+Deep domain or technical expertise applied to solve a hard problem. Use this tag when the achievement required specialised knowledge that took years to acquire — architecture decisions, rare technology stacks, regulated industries, complex integrations.
+
+> *"Designed a multi-region active-active Cosmos DB topology for a banking client, leveraging deep knowledge of conflict resolution and consistency models to meet a 99.999% SLA requirement."*
+
+#### L — Leadership
+
+Influencing people, teams, or organisations beyond your formal authority. Use this tag when you drove alignment, mentored others, led a team through uncertainty, built cross-functional consensus, or shaped organisational behaviour.
+
+> *"Led a 9-person cross-functional squad across 3 time zones during a critical migration, facilitating daily stand-ups and escalation paths that kept the project on schedule despite two key engineers being replaced mid-engagement."*
+
+#### I — Impact
+
+Quantifiable business or customer outcomes — revenue, cost, time, risk, NPS, user growth. Use this tag when the result is primarily measured in business metrics rather than technical ones. The bigger and more concrete the number, the stronger this tag.
+
+> *"Optimised the checkout flow for an e-commerce client, reducing cart abandonment by 23% and generating an additional €1.4 M in annual revenue within 6 months of launch."*
+
+#### T — Transformation
+
+Changing how a team, process, or organisation works — not just improving a metric. Use this tag when you introduced a new way of working, replaced a legacy system, shifted a culture, or enabled a capability that didn't exist before.
+
+> *"Introduced event-driven architecture to replace a monolithic batch-processing system, enabling real-time data processing and reducing the time-to-insight for analysts from overnight to under 30 seconds."*
+
+#### E — Excellence
+
+Going significantly above expectations in quality, thoroughness, or craft. Use this tag for achievements that demonstrate unusually high standards: zero-defect deliverables, exceptional client satisfaction scores, awards, or solutions that became internal reference implementations.
+
+> *"Delivered an accessibility audit and remediation for a public-sector portal that achieved a 100/100 Lighthouse score — the first project in the firm's history to meet full WCAG 2.1 AA compliance at launch."*
+
+---
+
+### How to Use Both Together
+
+1. **Pick an achievement.** Think of a moment where you made a real difference — a problem solved, a project delivered, a process improved.
+2. **Write the Challenge.** Set the scene with specifics. What was broken, missing, or at risk? What were the stakes?
+3. **Write the Action.** Focus on your contribution. Use strong verbs. Include decisions, tools, and approaches you chose.
+4. **Write the Result.** Quantify the outcome. If you don't have exact numbers, estimate conservatively or express relative improvement.
+5. **Assign an ELITE tag.** Ask yourself: what is the primary consulting value this achievement demonstrates? Pick the single best-fitting category.
+6. **Review your balance.** Aim for a spread across all five ELITE categories across your resume. A resume with only "Impact" tags may signal a narrow profile.
 
 ---
 
