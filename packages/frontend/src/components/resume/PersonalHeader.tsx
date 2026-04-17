@@ -36,10 +36,18 @@ export default function PersonalHeader({ data, theme }: Props) {
           >
             {data.title}
           </p>
+          {theme.companyName && (
+            <p
+              className="text-sm font-semibold mt-0.5"
+              style={{ color: theme.colors.secondary }}
+            >
+              {theme.companyName}
+            </p>
+          )}
           <div className="flex flex-wrap gap-x-4 gap-y-1 mt-3 text-sm" style={{ color: theme.colors.secondary }}>
-            {data.email && (
+            {theme.companyEmail && (
               <span className="flex items-center gap-1">
-                <Mail size={14} /> {data.email}
+                <Mail size={14} /> {theme.companyEmail}
               </span>
             )}
             {data.phone && (
@@ -67,25 +75,20 @@ export default function PersonalHeader({ data, theme }: Props) {
                 <Globe size={14} /> {data.website}
               </span>
             )}
-          </div>
-        </div>
-        {(theme.logo || theme.companyName) && (
-          <div className="flex flex-col items-end shrink-0 gap-1 min-w-[80px]">
-            {theme.logo && (
-              <img
-                src={theme.logo}
-                alt={theme.companyName || 'Company logo'}
-                className="h-12 w-auto object-contain"
-              />
-            )}
-            {theme.companyName && (
-              <span
-                className="text-xs font-semibold text-right leading-tight"
-                style={{ color: theme.colors.secondary }}
-              >
-                {theme.companyName}
+            {theme.companyWebsite && (
+              <span className="flex items-center gap-1">
+                <Globe size={14} /> {theme.companyWebsite}
               </span>
             )}
+          </div>
+        </div>
+        {theme.logo && (
+          <div className="flex flex-col items-end shrink-0 gap-1 min-w-[80px]">
+            <img
+              src={theme.logo}
+              alt={theme.companyName || 'Company logo'}
+              className="h-12 w-auto object-contain"
+            />
           </div>
         )}
       </div>

@@ -70,27 +70,15 @@ export default function PersonalInfoForm({ data, onChange }: Props) {
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
-        <div>
-          <label className="block text-sm font-medium text-gray-700">Email</label>
-          <input
-            type="email"
-            className={inputClasses}
-            value={data.email}
-            onChange={(e) => onChange({ ...data, email: e.target.value })}
-            placeholder="email@example.com"
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700">Phone</label>
-          <input
-            type="tel"
-            className={inputClasses}
-            value={data.phone}
-            onChange={(e) => onChange({ ...data, phone: e.target.value })}
-            placeholder="+49 170 1234567"
-          />
-        </div>
+      <div>
+        <label className="block text-sm font-medium text-gray-700">Phone</label>
+        <input
+          type="tel"
+          className={inputClasses}
+          value={data.phone}
+          onChange={(e) => onChange({ ...data, phone: e.target.value })}
+          placeholder="+49 170 1234567"
+        />
       </div>
 
       <BilingualField

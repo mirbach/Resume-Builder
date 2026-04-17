@@ -20,7 +20,7 @@ export interface BilingualText {
 export interface PersonalInfo {
   name: string;
   title: BilingualText;
-  email: string;
+  email?: string;
   phone: string;
   location: BilingualText;
   linkedin?: string;
@@ -155,6 +155,8 @@ export interface ThemeLayout {
 export interface ResumeTheme {
   name: string;
   companyName?: string;
+  companyEmail?: string;
+  companyWebsite?: string;
   logo?: string; // file path from uploads
   colors: ThemeColors;
   fonts: ThemeFonts;

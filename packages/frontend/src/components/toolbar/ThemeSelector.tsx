@@ -13,7 +13,7 @@ export default function ThemeSelector({ value, onChange }: Props) {
 
   useEffect(() => {
     getThemes().then((list) => setThemes(list));
-  }, []);
+  }, [value]);
 
   return (
     <div className="flex items-center gap-2">

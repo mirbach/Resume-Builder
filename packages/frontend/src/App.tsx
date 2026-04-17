@@ -9,6 +9,7 @@ import LanguageSwitcher from './components/toolbar/LanguageSwitcher';
 import ThemeSelector from './components/toolbar/ThemeSelector';
 import ThemeEditor from './components/editor/theme/ThemeEditor';
 import PdfExportButton from './components/pdf/PdfExportButton';
+import PrintButton from './components/pdf/PrintButton';
 import SettingsPage from './components/SettingsPage';
 import { Save, CheckCircle, AlertCircle, Loader2, Palette, Settings, Moon, Sun, Pencil, ArrowLeft, X, LogOut } from 'lucide-react';
 
@@ -257,6 +258,7 @@ export default function App() {
           </span>
           <div className="flex items-center gap-3">
             <LanguageSwitcher language={language} onChange={setLanguage} />
+            <PrintButton />
             <PdfExportButton resume={resolved} theme={theme} language={language} />
             <button
               aria-label="Toggle dark mode"
@@ -292,7 +294,9 @@ export default function App() {
 
         {/* Full-page resume preview */}
         <div className="flex-1 overflow-y-auto p-6">
-          <ResumeLayout resume={resolved} theme={theme} />
+          <div id="print-resume">
+            <ResumeLayout resume={resolved} theme={theme} />
+          </div>
         </div>
       </div>
     );
@@ -349,7 +353,7 @@ export default function App() {
             onClick={() => setShowThemeEditor(true)}
             className="flex items-center gap-1 rounded-md border border-gray-300 dark:border-gray-600 px-2 py-1.5 text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
           >
-            <Palette size={14} /> Edit Theme
+            <Palette size={14} /> Company
           </button>
           <LanguageSwitcher language={language} onChange={setLanguage} />
           <button

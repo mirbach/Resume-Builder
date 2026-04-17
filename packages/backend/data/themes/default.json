@@ -1,5 +1,5 @@
 {
-  "name": "default",
+  "name": "Sovereign Cyber LLC",
   "colors": {
     "primary": "#2563eb",
     "secondary": "#6b7280",
@@ -36,5 +36,6 @@
       "left": 40
     }
   },
-  "logo": "/api/uploads/b82c58b6-a9da-45c7-8864-b5d826c0e1c0.png"
+  "logo": "/api/uploads/b82c58b6-a9da-45c7-8864-b5d826c0e1c0.png",
+  "companyName": "Sovereign Cyber LLC"
 }

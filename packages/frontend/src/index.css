@@ -28,6 +28,32 @@
   background-color: rgb(55 65 81); /* gray-700 — matches textarea background */
 }
 
+/* ---- Print styles ---- */
+@media print {
+  /* Hide every node but allow descendants to reveal themselves */
+  body * { visibility: hidden; }
+
+  /* Show only the resume content */
+  #print-resume,
+  #print-resume * { visibility: visible; }
+
+  /* Position it at the top-left so it fills the printed page */
+  #print-resume {
+    position: fixed;
+    inset: 0;
+    overflow: visible;
+    background: white;
+  }
+
+  /* Remove card chrome */
+  #print-resume > div {
+    box-shadow: none !important;
+    margin: 0 !important;
+    max-width: 100% !important;
+    min-height: auto !important;
+  }
+}
+
 /* Dark mode: entry cards and labels inside editor forms */
 .dark .editor-form .entry-card {
   background-color: rgb(31 41 55);   /* gray-800 */

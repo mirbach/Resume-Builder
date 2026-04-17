@@ -163,23 +163,22 @@ function SectionPersonal({ resume, styles, theme }: { resume: ResolvedResume; st
         <View style={styles.headerLeft}>
           <Text style={styles.name}>{resume.personal.name}</Text>
           <Text style={styles.title}>{resume.personal.title}</Text>
+          {theme.companyName && (
+            <Text style={[styles.companyName, { textAlign: 'left', marginTop: 2 }]}>{theme.companyName}</Text>
+          )}
           <View style={styles.contactRow}>
-            {resume.personal.email && <Text style={styles.contactItem}>{resume.personal.email}</Text>}
+            {theme.companyEmail && <Text style={styles.contactItem}>{theme.companyEmail}</Text>}
             {resume.personal.phone && <Text style={styles.contactItem}>{resume.personal.phone}</Text>}
             {resume.personal.location && <Text style={styles.contactItem}>{resume.personal.location}</Text>}
             {resume.personal.linkedin && <Text style={styles.contactItem}>{resume.personal.linkedin}</Text>}
             {resume.personal.github && <Text style={styles.contactItem}>{resume.personal.github}</Text>}
             {resume.personal.website && <Text style={styles.contactItem}>{resume.personal.website}</Text>}
+            {theme.companyWebsite && <Text style={styles.contactItem}>{theme.companyWebsite}</Text>}
           </View>
         </View>
-        {(logoSrc || theme.companyName) && (
+        {logoSrc && (
           <View style={styles.headerRight}>
-            {logoSrc && (
-              <Image src={logoSrc} style={styles.companyLogo} />
-            )}
-            {theme.companyName && (
-              <Text style={styles.companyName}>{theme.companyName}</Text>
-            )}
+            <Image src={logoSrc} style={styles.companyLogo} />
           </View>
         )}
       </View>

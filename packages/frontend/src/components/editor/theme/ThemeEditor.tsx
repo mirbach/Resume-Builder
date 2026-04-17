@@ -114,6 +114,8 @@ export default function ThemeEditor({ currentTheme, onThemeChange, onClose }: Pr
     setSaving(true);
     try {
       await saveTheme(selectedTheme, theme);
+      const list = await getThemes();
+      setThemes(list);
       onThemeChange(selectedTheme);
     } catch (e) {
       console.error(e);
@@ -131,7 +133,9 @@ export default function ThemeEditor({ currentTheme, onThemeChange, onClose }: Pr
       setThemes(list);
       // Find the new theme's filename (server derives it from the name)
       const created = list.find((t) => t.name === newName.trim());
-      setSelectedTheme(created ? created.filename : newName.trim().toLowerCase().replace(/\s+/g, '-'));
+      const nextTheme = created ? created.filename : newName.trim().toLowerCase().replace(/\s+/g, '-');
+      setSelectedTheme(nextTheme);
+      onThemeChange(nextTheme);
       setShowCreate(false);
       setNewName('');
     } catch (e) {
@@ -146,6 +150,7 @@ export default function ThemeEditor({ currentTheme, onThemeChange, onClose }: Pr
       const list = await getThemes();
       setThemes(list);
       setSelectedTheme('default');
+      onThemeChange('default');
     } catch (e) {
       console.error(e);
     }
@@ -199,13 +204,21 @@ export default function ThemeEditor({ currentTheme, onThemeChange, onClose }: Pr
             </div>
           )}
 
-          {/* Company Branding */}
           <fieldset>
-            <legend className="text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">Company Branding</legend>
+            <legend className="text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">Company Management</legend>
             <p className="text-xs text-gray-500 dark:text-gray-400 mb-3">
-              Appears top-right on the resume — ideal for consulting company identity.
+              Branding and contact details for this consulting engagement — appears top-right on the resume.
             </p>
             <div className="space-y-3">
+              <div>
+                <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">Profile Label</label>
+                <input
+                  className={inputClasses}
+                  value={theme.name}
+                  onChange={(e) => setTheme({ ...theme, name: e.target.value })}
+                  placeholder="Theme name"
+                />
+              </div>
               <div>
                 <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">Company Name</label>
                 <input
@@ -214,6 +227,28 @@ export default function ThemeEditor({ currentTheme, onThemeChange, onClose }: Pr
                   onChange={(e) => setTheme({ ...theme, companyName: e.target.value || undefined })}
                   placeholder="Acme Consulting GmbH"
                 />
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">Company Email</label>
+                  <input
+                    type="email"
+                    className={inputClasses}
+                    value={theme.companyEmail || ''}
+                    onChange={(e) => setTheme({ ...theme, companyEmail: e.target.value || undefined })}
+                    placeholder="contact@acme.com"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">Company Website</label>
+                  <input
+                    type="text"
+                    className={inputClasses}
+                    value={theme.companyWebsite || ''}
+                    onChange={(e) => setTheme({ ...theme, companyWebsite: e.target.value || undefined })}
+                    placeholder="acme-consulting.com"
+                  />
+                </div>
               </div>
               <div>
                 <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">Company Logo</label>
