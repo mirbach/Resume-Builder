@@ -75,19 +75,19 @@ export default function Experience({ data, theme }: Props) {
                         </span>
                       )}
                       <div className="flex-1">
-                        <p>
+                        <p style={{ whiteSpace: 'pre-wrap' }}>
                           <span className="font-medium" style={{ color: theme.colors.accent }}>
                             Challenge:{' '}
                           </span>
                           {ach.challenge}
                         </p>
-                        <p>
+                        <p style={{ whiteSpace: 'pre-wrap' }}>
                           <span className="font-medium" style={{ color: theme.colors.accent }}>
                             Action:{' '}
                           </span>
                           {ach.action}
                         </p>
-                        <p>
+                        <p style={{ whiteSpace: 'pre-wrap' }}>
                           <span className="font-medium" style={{ color: theme.colors.accent }}>
                             Result:{' '}
                           </span>

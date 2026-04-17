@@ -40,7 +40,7 @@ export default function Education({ data, theme }: Props) {
               </span>
             </div>
             {edu.details && (
-              <p className="text-xs mt-1" style={{ color: theme.colors.secondary }}>
+              <p className="text-xs mt-1" style={{ color: theme.colors.secondary, whiteSpace: 'pre-wrap' }}>
                 {edu.details}
               </p>
             )}

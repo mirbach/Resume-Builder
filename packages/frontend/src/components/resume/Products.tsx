@@ -26,7 +26,7 @@ export default function Products({ data, theme }: Props) {
             <h3 className="font-semibold text-sm" style={{ color: theme.colors.heading }}>
               {prod.name}
             </h3>
-            <p className="text-sm mt-0.5" style={{ color: theme.colors.text }}>
+            <p className="text-sm mt-0.5" style={{ color: theme.colors.text, whiteSpace: 'pre-wrap' }}>
               {prod.description}
             </p>
             <p className="text-xs mt-0.5" style={{ color: theme.colors.secondary }}>

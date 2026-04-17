@@ -33,7 +33,7 @@ export default function Projects({ data, theme }: Props) {
                 </span>
               )}
             </div>
-            <p className="text-sm mt-0.5" style={{ color: theme.colors.text }}>
+            <p className="text-sm mt-0.5" style={{ color: theme.colors.text, whiteSpace: 'pre-wrap' }}>
               {proj.description}
             </p>
             <div className="flex flex-wrap gap-1 mt-1">

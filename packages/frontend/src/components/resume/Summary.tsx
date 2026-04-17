@@ -21,7 +21,7 @@ export default function Summary({ data, theme }: Props) {
       </h2>
       <p
         className="text-sm leading-relaxed"
-        style={{ color: theme.colors.text, fontFamily: theme.fonts.body }}
+        style={{ color: theme.colors.text, fontFamily: theme.fonts.body, whiteSpace: 'pre-wrap' }}
       >
         {data}
       </p>
