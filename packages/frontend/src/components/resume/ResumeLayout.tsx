@@ -1,4 +1,4 @@
-import type { ResolvedResume, ResumeTheme, ResumeSection } from '../../lib/types';
+import type { ResolvedResume, ResumeTheme, ResumeSection, Language } from '../../lib/types';
 import PersonalHeader from './PersonalHeader';
 import Summary from './Summary';
 import Experience from './Experience';
@@ -13,6 +13,7 @@ import References from './References';
 interface Props {
   resume: ResolvedResume;
   theme: ResumeTheme;
+  lang: Language;
 }
 
 /** Map PDF font names to browser-safe CSS font-family strings. */
@@ -37,34 +38,34 @@ function withCssFonts(theme: ResumeTheme): ResumeTheme {
   };
 }
 
-function renderSection(section: ResumeSection, resume: ResolvedResume, theme: ResumeTheme) {
+function renderSection(section: ResumeSection, resume: ResolvedResume, theme: ResumeTheme, lang: Language) {
   switch (section) {
     case 'personal':
       return <PersonalHeader key="personal" data={resume.personal} theme={theme} />;
     case 'summary':
-      return <Summary key="summary" data={resume.summary} theme={theme} />;
+      return <Summary key="summary" data={resume.summary} theme={theme} lang={lang} />;
     case 'experience':
-      return <Experience key="experience" data={resume.experience} theme={theme} />;
+      return <Experience key="experience" data={resume.experience} theme={theme} lang={lang} />;
     case 'education':
-      return <Education key="education" data={resume.education} theme={theme} />;
+      return <Education key="education" data={resume.education} theme={theme} lang={lang} />;
     case 'skills':
-      return <Skills key="skills" data={resume.skills} theme={theme} />;
+      return <Skills key="skills" data={resume.skills} theme={theme} lang={lang} />;
     case 'certifications':
-      return <Certifications key="certifications" data={resume.certifications} theme={theme} />;
+      return <Certifications key="certifications" data={resume.certifications} theme={theme} lang={lang} />;
     case 'languages':
-      return <Languages key="languages" data={resume.languages} theme={theme} />;
+      return <Languages key="languages" data={resume.languages} theme={theme} lang={lang} />;
     case 'projects':
-      return <Projects key="projects" data={resume.projects} theme={theme} />;
+      return <Projects key="projects" data={resume.projects} theme={theme} lang={lang} />;
     case 'products':
-      return <Products key="products" data={resume.products} theme={theme} />;
+      return <Products key="products" data={resume.products} theme={theme} lang={lang} />;
     case 'references':
-      return <References key="references" data={resume.references} theme={theme} />;
+      return <References key="references" data={resume.references} theme={theme} lang={lang} />;
     default:
       return null;
   }
 }
 
-export default function ResumeLayout({ resume, theme }: Props) {
+export default function ResumeLayout({ resume, theme, lang }: Props) {
   const cssTheme = withCssFonts(theme);
   const { sectionOrder, pageMargins } = cssTheme.layout;
 
@@ -79,7 +80,7 @@ export default function ResumeLayout({ resume, theme }: Props) {
         backgroundColor: cssTheme.colors.background,
       }}
     >
-      {sectionOrder.map((section) => renderSection(section, resume, cssTheme))}
+      {sectionOrder.map((section) => renderSection(section, resume, cssTheme, lang))}
     </div>
   );
 }

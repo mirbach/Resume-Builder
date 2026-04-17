@@ -1,11 +1,13 @@
-import type { ResumeTheme } from '../../lib/types';
+import type { ResumeTheme, Language } from '../../lib/types';
+import { getSectionLabel } from '../../lib/sectionLabels';
 
 interface Props {
   data: string;
   theme: ResumeTheme;
+  lang: Language;
 }
 
-export default function Summary({ data, theme }: Props) {
+export default function Summary({ data, theme, lang }: Props) {
   if (!data) return null;
   return (
     <section className="mb-4">
@@ -17,7 +19,7 @@ export default function Summary({ data, theme }: Props) {
           fontFamily: theme.fonts.heading,
         }}
       >
-        Professional Summary
+        {getSectionLabel('summary', lang)}
       </h2>
       <p
         className="text-sm leading-relaxed"

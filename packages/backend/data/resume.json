@@ -273,7 +273,10 @@
   "projects": [
     {
       "id": "proj-1",
-      "name": { "en": "CloudDeploy CLI", "de": "CloudDeploy CLI" },
+      "name": {
+        "en": "CloudDeploy CLI",
+        "de": "CloudDeploy CLI"
+      },
       "description": {
         "en": "Open-source CLI tool for simplified multi-cloud deployments with automatic infrastructure provisioning and rollback capabilities.",
         "de": "Open-Source-CLI-Tool für vereinfachte Multi-Cloud-Deployments mit automatischer Infrastruktur-Provisionierung und Rollback-Fähigkeiten."
@@ -306,7 +309,10 @@
     },
     {
       "id": "proj-2",
-      "name": { "en": "RealtimeSync", "de": "RealtimeSync" },
+      "name": {
+        "en": "RealtimeSync",
+        "de": "RealtimeSync"
+      },
       "description": {
         "en": "Real-time data synchronization library for distributed applications, supporting conflict resolution and offline-first patterns.",
         "de": "Echtzeit-Datensynchronisierungsbibliothek für verteilte Anwendungen mit Unterstützung für Konfliktlösung und Offline-First-Muster."
@@ -323,7 +329,10 @@
     },
     {
       "id": "ecee82e8-8de7-4782-9482-f2a994dd1e4e",
-      "name": { "en": "Sentinel Improvement", "de": "Sentinel Improvement" },
+      "name": {
+        "en": "Sentinel Improvement",
+        "de": "Sentinel Improvement"
+      },
       "description": {
         "en": "",
         "de": ""

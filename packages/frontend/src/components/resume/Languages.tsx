@@ -1,11 +1,13 @@
-import type { ResolvedLanguageEntry, ResumeTheme } from '../../lib/types';
+import type { ResolvedLanguageEntry, ResumeTheme, Language } from '../../lib/types';
+import { getSectionLabel } from '../../lib/sectionLabels';
 
 interface Props {
   data: ResolvedLanguageEntry[];
   theme: ResumeTheme;
+  lang: Language;
 }
 
-export default function Languages({ data, theme }: Props) {
+export default function Languages({ data, theme, lang }: Props) {
   if (!data.length) return null;
 
   return (
@@ -18,7 +20,7 @@ export default function Languages({ data, theme }: Props) {
           fontFamily: theme.fonts.heading,
         }}
       >
-        Languages
+        {getSectionLabel('languages', lang)}
       </h2>
       <div className="flex flex-wrap gap-x-6 gap-y-1">
         {data.map((lang) => (

@@ -12,7 +12,8 @@ import {
   Rect,
   Circle,
 } from '@react-pdf/renderer';
-import type { ResolvedResume, ResumeTheme, ResumeSection, EliteCategory } from '../../lib/types';
+import type { ResolvedResume, ResumeTheme, ResumeSection, EliteCategory, Language } from '../../lib/types';
+import { getSectionLabel, getCarLabel, getEliteLabel } from '../../lib/sectionLabels';
 import { lightTint } from '../../lib/colorUtils';
 
 // pdfkit only supports TTF/OTF — woff/woff2 cause DataView errors.
@@ -35,14 +36,6 @@ function pdfFontBold(name: string): string {
     default:            return 'Helvetica-Bold';
   }
 }
-
-const ELITE_LABELS: Record<EliteCategory, string> = {
-  experience: 'Experience',
-  leadership: 'Leadership',
-  impact: 'Impact',
-  transformation: 'Transformation',
-  excellence: 'Excellence',
-};
 
 const ELITE_BG: Record<EliteCategory, string> = {
   experience: '#dbeafe',
@@ -212,6 +205,7 @@ function createStyles(theme: ResumeTheme) {
 interface Props {
   resume: ResolvedResume;
   theme: ResumeTheme;
+  lang: Language;
 }
 
 function SectionPersonal({ resume, styles, theme }: { resume: ResolvedResume; styles: ReturnType<typeof createStyles>; theme: ResumeTheme }) {
@@ -289,21 +283,21 @@ function SectionPersonal({ resume, styles, theme }: { resume: ResolvedResume; st
   );
 }
 
-function SectionSummary({ resume, styles }: { resume: ResolvedResume; styles: ReturnType<typeof createStyles> }) {
+function SectionSummary({ resume, styles, lang }: { resume: ResolvedResume; styles: ReturnType<typeof createStyles>; lang: Language }) {
   if (!resume.summary) return null;
   return (
     <View>
-      <Text style={styles.sectionTitle}>Professional Summary</Text>
+      <Text style={styles.sectionTitle}>{getSectionLabel('summary', lang)}</Text>
       <Text style={styles.bodyText}>{resume.summary}</Text>
     </View>
   );
 }
 
-function SectionExperience({ resume, styles }: { resume: ResolvedResume; styles: ReturnType<typeof createStyles> }) {
+function SectionExperience({ resume, styles, lang }: { resume: ResolvedResume; styles: ReturnType<typeof createStyles>; lang: Language }) {
   if (!resume.experience.length) return null;
   return (
     <View>
-      <Text style={styles.sectionTitle}>Work Experience</Text>
+      <Text style={styles.sectionTitle}>{getSectionLabel('experience', lang)}</Text>
       {resume.experience.map((exp) => (
         <View key={exp.id} style={{ marginBottom: 8 }}>
           <View style={styles.entryHeader}>
@@ -317,19 +311,19 @@ function SectionExperience({ resume, styles }: { resume: ResolvedResume; styles:
             <View key={ach.id} style={[styles.achievement, { flexDirection: 'row' }]}>
               <View style={{ flex: 1 }}>
                 <Text style={styles.achText}>
-                  <Text style={styles.achLabel}>Challenge: </Text>{ach.challenge}
+                  <Text style={styles.achLabel}>{getCarLabel('challenge', lang)}: </Text>{ach.challenge}
                 </Text>
                 <Text style={styles.achText}>
-                  <Text style={styles.achLabel}>Action: </Text>{ach.action}
+                  <Text style={styles.achLabel}>{getCarLabel('action', lang)}: </Text>{ach.action}
                 </Text>
                 <Text style={styles.achText}>
-                  <Text style={styles.achLabel}>Result: </Text>{ach.result}
+                  <Text style={styles.achLabel}>{getCarLabel('result', lang)}: </Text>{ach.result}
                 </Text>
               </View>
               {ach.eliteCategory && (
                 <View style={[styles.eliteBadge, { backgroundColor: ELITE_BG[ach.eliteCategory], color: ELITE_COLOR[ach.eliteCategory] }]}>
                   <Text style={{ fontSize: 7, fontWeight: 700, textAlign: 'center', color: ELITE_COLOR[ach.eliteCategory!] }}>
-                    {ELITE_LABELS[ach.eliteCategory]}
+                    {getEliteLabel(ach.eliteCategory, lang)}
                   </Text>
                 </View>
               )}
@@ -341,11 +335,11 @@ function SectionExperience({ resume, styles }: { resume: ResolvedResume; styles:
   );
 }
 
-function SectionEducation({ resume, styles }: { resume: ResolvedResume; styles: ReturnType<typeof createStyles> }) {
+function SectionEducation({ resume, styles, lang }: { resume: ResolvedResume; styles: ReturnType<typeof createStyles>; lang: Language }) {
   if (!resume.education.length) return null;
   return (
     <View>
-      <Text style={styles.sectionTitle}>Education</Text>
+      <Text style={styles.sectionTitle}>{getSectionLabel('education', lang)}</Text>
       {resume.education.map((edu) => (
         <View key={edu.id} style={{ marginBottom: 4 }}>
           <View style={styles.entryHeader}>
@@ -362,11 +356,11 @@ function SectionEducation({ resume, styles }: { resume: ResolvedResume; styles: 
   );
 }
 
-function SectionSkills({ resume, styles }: { resume: ResolvedResume; styles: ReturnType<typeof createStyles> }) {
+function SectionSkills({ resume, styles, lang }: { resume: ResolvedResume; styles: ReturnType<typeof createStyles>; lang: Language }) {
   if (!resume.skills.length) return null;
   return (
     <View>
-      <Text style={styles.sectionTitle}>Skills</Text>
+      <Text style={styles.sectionTitle}>{getSectionLabel('skills', lang)}</Text>
       {resume.skills.map((cat) => (
         <View key={cat.id} style={styles.skillCategory}>
           <Text style={styles.skillCatName}>{cat.category}</Text>
@@ -381,11 +375,11 @@ function SectionSkills({ resume, styles }: { resume: ResolvedResume; styles: Ret
   );
 }
 
-function SectionCertifications({ resume, styles }: { resume: ResolvedResume; styles: ReturnType<typeof createStyles> }) {
+function SectionCertifications({ resume, styles, lang }: { resume: ResolvedResume; styles: ReturnType<typeof createStyles>; lang: Language }) {
   if (!resume.certifications.length) return null;
   return (
     <View>
-      <Text style={styles.sectionTitle}>Certifications</Text>
+      <Text style={styles.sectionTitle}>{getSectionLabel('certifications', lang)}</Text>
       {resume.certifications.map((cert) => (
         <View key={cert.id} style={styles.certRow}>
           <Text>
@@ -403,16 +397,16 @@ function SectionCertifications({ resume, styles }: { resume: ResolvedResume; sty
   );
 }
 
-function SectionLanguages({ resume, styles }: { resume: ResolvedResume; styles: ReturnType<typeof createStyles> }) {
+function SectionLanguages({ resume, styles, lang }: { resume: ResolvedResume; styles: ReturnType<typeof createStyles>; lang: Language }) {
   if (!resume.languages.length) return null;
   return (
     <View>
-      <Text style={styles.sectionTitle}>Languages</Text>
+      <Text style={styles.sectionTitle}>{getSectionLabel('languages', lang)}</Text>
       <View style={styles.langRow}>
-        {resume.languages.map((lang) => (
-          <Text key={lang.id} style={styles.langItem}>
-            <Text style={styles.langName}>{lang.language}</Text>
-            <Text style={styles.langLevel}> — {lang.level}</Text>
+        {resume.languages.map((langEntry) => (
+          <Text key={langEntry.id} style={styles.langItem}>
+            <Text style={styles.langName}>{langEntry.language}</Text>
+            <Text style={styles.langLevel}> — {langEntry.level}</Text>
           </Text>
         ))}
       </View>
@@ -420,11 +414,11 @@ function SectionLanguages({ resume, styles }: { resume: ResolvedResume; styles: 
   );
 }
 
-function SectionProjects({ resume, styles }: { resume: ResolvedResume; styles: ReturnType<typeof createStyles> }) {
+function SectionProjects({ resume, styles, lang }: { resume: ResolvedResume; styles: ReturnType<typeof createStyles>; lang: Language }) {
   if (!resume.projects.length) return null;
   return (
     <View>
-      <Text style={styles.sectionTitle}>Projects</Text>
+      <Text style={styles.sectionTitle}>{getSectionLabel('projects', lang)}</Text>
       {resume.projects.map((proj) => (
         <View key={proj.id} style={{ marginBottom: 6 }}>
           <View style={styles.entryHeader}>
@@ -449,19 +443,19 @@ function SectionProjects({ resume, styles }: { resume: ResolvedResume; styles: R
             <View key={ach.id} style={[styles.achievement, { flexDirection: 'row' }]}>
               <View style={{ flex: 1 }}>
                 <Text style={styles.achText}>
-                  <Text style={styles.achLabel}>Challenge: </Text>{ach.challenge}
+                  <Text style={styles.achLabel}>{getCarLabel('challenge', lang)}: </Text>{ach.challenge}
                 </Text>
                 <Text style={styles.achText}>
-                  <Text style={styles.achLabel}>Action: </Text>{ach.action}
+                  <Text style={styles.achLabel}>{getCarLabel('action', lang)}: </Text>{ach.action}
                 </Text>
                 <Text style={styles.achText}>
-                  <Text style={styles.achLabel}>Result: </Text>{ach.result}
+                  <Text style={styles.achLabel}>{getCarLabel('result', lang)}: </Text>{ach.result}
                 </Text>
               </View>
               {ach.eliteCategory && (
                 <View style={[styles.eliteBadge, { backgroundColor: ELITE_BG[ach.eliteCategory], color: ELITE_COLOR[ach.eliteCategory] }]}>
                   <Text style={{ fontSize: 7, fontWeight: 700, textAlign: 'center', color: ELITE_COLOR[ach.eliteCategory!] }}>
-                    {ELITE_LABELS[ach.eliteCategory]}
+                    {getEliteLabel(ach.eliteCategory, lang)}
                   </Text>
                 </View>
               )}
@@ -473,11 +467,11 @@ function SectionProjects({ resume, styles }: { resume: ResolvedResume; styles: R
   );
 }
 
-function SectionProducts({ resume, styles }: { resume: ResolvedResume; styles: ReturnType<typeof createStyles> }) {
+function SectionProducts({ resume, styles, lang }: { resume: ResolvedResume; styles: ReturnType<typeof createStyles>; lang: Language }) {
   if (!resume.products.length) return null;
   return (
     <View>
-      <Text style={styles.sectionTitle}>Products</Text>
+      <Text style={styles.sectionTitle}>{getSectionLabel('products', lang)}</Text>
       {resume.products.map((prod) => (
         <View key={prod.id} style={{ marginBottom: 6 }}>
           <View style={{ flexDirection: 'row', alignItems: 'baseline', gap: 6 }}>
@@ -497,11 +491,11 @@ function SectionProducts({ resume, styles }: { resume: ResolvedResume; styles: R
   );
 }
 
-function SectionReferences({ resume, styles }: { resume: ResolvedResume; styles: ReturnType<typeof createStyles> }) {
+function SectionReferences({ resume, styles, lang }: { resume: ResolvedResume; styles: ReturnType<typeof createStyles>; lang: Language }) {
   if (!resume.references.length) return null;
   return (
     <View>
-      <Text style={styles.sectionTitle}>References</Text>
+      <Text style={styles.sectionTitle}>{getSectionLabel('references', lang)}</Text>
       <View style={styles.refGrid}>
         {resume.references.map((ref) => (
           <View key={ref.id} style={styles.refItem}>
@@ -516,29 +510,29 @@ function SectionReferences({ resume, styles }: { resume: ResolvedResume; styles:
   );
 }
 
-function renderPdfSection(section: ResumeSection, resume: ResolvedResume, styles: ReturnType<typeof createStyles>, theme: ResumeTheme) {
+function renderPdfSection(section: ResumeSection, resume: ResolvedResume, styles: ReturnType<typeof createStyles>, theme: ResumeTheme, lang: Language) {
   switch (section) {
     case 'personal': return <SectionPersonal key="personal" resume={resume} styles={styles} theme={theme} />;
-    case 'summary': return <SectionSummary key="summary" resume={resume} styles={styles} />;
-    case 'experience': return <SectionExperience key="experience" resume={resume} styles={styles} />;
-    case 'education': return <SectionEducation key="education" resume={resume} styles={styles} />;
-    case 'skills': return <SectionSkills key="skills" resume={resume} styles={styles} />;
-    case 'certifications': return <SectionCertifications key="certifications" resume={resume} styles={styles} />;
-    case 'languages': return <SectionLanguages key="languages" resume={resume} styles={styles} />;
-    case 'projects': return <SectionProjects key="projects" resume={resume} styles={styles} />;
-    case 'products': return <SectionProducts key="products" resume={resume} styles={styles} />;
-    case 'references': return <SectionReferences key="references" resume={resume} styles={styles} />;
+    case 'summary': return <SectionSummary key="summary" resume={resume} styles={styles} lang={lang} />;
+    case 'experience': return <SectionExperience key="experience" resume={resume} styles={styles} lang={lang} />;
+    case 'education': return <SectionEducation key="education" resume={resume} styles={styles} lang={lang} />;
+    case 'skills': return <SectionSkills key="skills" resume={resume} styles={styles} lang={lang} />;
+    case 'certifications': return <SectionCertifications key="certifications" resume={resume} styles={styles} lang={lang} />;
+    case 'languages': return <SectionLanguages key="languages" resume={resume} styles={styles} lang={lang} />;
+    case 'projects': return <SectionProjects key="projects" resume={resume} styles={styles} lang={lang} />;
+    case 'products': return <SectionProducts key="products" resume={resume} styles={styles} lang={lang} />;
+    case 'references': return <SectionReferences key="references" resume={resume} styles={styles} lang={lang} />;
     default: return null;
   }
 }
 
-export default function ResumePdfDocument({ resume, theme }: Props) {
+export default function ResumePdfDocument({ resume, theme, lang }: Props) {
   const styles = createStyles(theme);
 
   return (
     <Document>
       <Page size="A4" style={styles.page}>
-        {theme.layout.sectionOrder.map((section) => renderPdfSection(section, resume, styles, theme))}
+        {theme.layout.sectionOrder.map((section) => renderPdfSection(section, resume, styles, theme, lang))}
       </Page>
     </Document>
   );

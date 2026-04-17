@@ -43,7 +43,7 @@ export default function PdfExportButton({ resume, theme, language }: Props) {
         catch { /* skip if fetch fails */ }
       }
 
-      const doc = <ResumePdfDocument resume={resolvedResume} theme={resolvedTheme} />;
+      const doc = <ResumePdfDocument resume={resolvedResume} theme={resolvedTheme} lang={language} />;
       const blob = await pdf(doc).toBlob();
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');

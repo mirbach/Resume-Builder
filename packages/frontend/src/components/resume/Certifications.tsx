@@ -1,11 +1,13 @@
-import type { ResolvedCertificationEntry, ResumeTheme } from '../../lib/types';
+import type { ResolvedCertificationEntry, ResumeTheme, Language } from '../../lib/types';
+import { getSectionLabel } from '../../lib/sectionLabels';
 
 interface Props {
   data: ResolvedCertificationEntry[];
   theme: ResumeTheme;
+  lang: Language;
 }
 
-export default function Certifications({ data, theme }: Props) {
+export default function Certifications({ data, theme, lang }: Props) {
   if (!data.length) return null;
 
   return (
@@ -18,7 +20,7 @@ export default function Certifications({ data, theme }: Props) {
           fontFamily: theme.fonts.heading,
         }}
       >
-        Certifications
+        {getSectionLabel('certifications', lang)}
       </h2>
       <div className="space-y-1">
         {data.map((cert) => (

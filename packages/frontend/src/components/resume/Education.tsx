@@ -1,11 +1,13 @@
-import type { ResolvedEducation, ResumeTheme } from '../../lib/types';
+import type { ResolvedEducation, ResumeTheme, Language } from '../../lib/types';
+import { getSectionLabel } from '../../lib/sectionLabels';
 
 interface Props {
   data: ResolvedEducation[];
   theme: ResumeTheme;
+  lang: Language;
 }
 
-export default function Education({ data, theme }: Props) {
+export default function Education({ data, theme, lang }: Props) {
   if (!data.length) return null;
 
   return (
@@ -18,7 +20,7 @@ export default function Education({ data, theme }: Props) {
           fontFamily: theme.fonts.heading,
         }}
       >
-        Education
+        {getSectionLabel('education', lang)}
       </h2>
       <div className="space-y-3">
         {data.map((edu) => (

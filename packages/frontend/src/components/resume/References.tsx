@@ -1,11 +1,13 @@
-import type { ResolvedReference, ResumeTheme } from '../../lib/types';
+import type { ResolvedReference, ResumeTheme, Language } from '../../lib/types';
+import { getSectionLabel } from '../../lib/sectionLabels';
 
 interface Props {
   data: ResolvedReference[];
   theme: ResumeTheme;
+  lang: Language;
 }
 
-export default function References({ data, theme }: Props) {
+export default function References({ data, theme, lang }: Props) {
   if (!data.length) return null;
 
   return (
@@ -18,7 +20,7 @@ export default function References({ data, theme }: Props) {
           fontFamily: theme.fonts.heading,
         }}
       >
-        References
+        {getSectionLabel('references', lang)}
       </h2>
       <div className="grid grid-cols-2 gap-3">
         {data.map((ref) => (

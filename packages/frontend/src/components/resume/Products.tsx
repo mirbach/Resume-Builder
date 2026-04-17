@@ -1,11 +1,13 @@
-import type { ResolvedProduct, ResumeTheme } from '../../lib/types';
+import type { ResolvedProduct, ResumeTheme, Language } from '../../lib/types';
+import { getSectionLabel } from '../../lib/sectionLabels';
 
 interface Props {
   data: ResolvedProduct[];
   theme: ResumeTheme;
+  lang: Language;
 }
 
-export default function Products({ data, theme }: Props) {
+export default function Products({ data, theme, lang }: Props) {
   if (!data.length) return null;
 
   return (
@@ -18,7 +20,7 @@ export default function Products({ data, theme }: Props) {
           fontFamily: theme.fonts.heading,
         }}
       >
-        Products
+        {getSectionLabel('products', lang)}
       </h2>
       <div className="space-y-3">
         {data.map((prod) => (

@@ -1,20 +1,22 @@
-import type { ResolvedProject, ResumeTheme, EliteCategory } from '../../lib/types';
+import type { ResolvedProject, ResumeTheme, EliteCategory, Language } from '../../lib/types';
 import { lightTint } from '../../lib/colorUtils';
+import { getSectionLabel, getCarLabel, getEliteLabel } from '../../lib/sectionLabels';
 
 interface Props {
   data: ResolvedProject[];
   theme: ResumeTheme;
+  lang: Language;
 }
 
-const ELITE_COLORS: Record<EliteCategory, { bg: string; text: string; label: string }> = {
-  experience: { bg: '#dbeafe', text: '#1d4ed8', label: 'Experience' },
-  leadership: { bg: '#f3e8ff', text: '#7c3aed', label: 'Leadership' },
-  impact: { bg: '#dcfce7', text: '#15803d', label: 'Impact' },
-  transformation: { bg: '#ffedd5', text: '#c2410c', label: 'Transformation' },
-  excellence: { bg: '#fef9c3', text: '#a16207', label: 'Excellence' },
+const ELITE_COLORS: Record<EliteCategory, { bg: string; text: string }> = {
+  experience: { bg: '#dbeafe', text: '#1d4ed8' },
+  leadership: { bg: '#f3e8ff', text: '#7c3aed' },
+  impact:     { bg: '#dcfce7', text: '#15803d' },
+  transformation: { bg: '#ffedd5', text: '#c2410c' },
+  excellence: { bg: '#fef9c3', text: '#a16207' },
 };
 
-export default function Projects({ data, theme }: Props) {
+export default function Projects({ data, theme, lang }: Props) {
   if (!data.length) return null;
 
   return (
@@ -27,7 +29,7 @@ export default function Projects({ data, theme }: Props) {
           fontFamily: theme.fonts.heading,
         }}
       >
-        Projects
+        {getSectionLabel('projects', lang)}
       </h2>
       <div className="space-y-3">
         {data.map((proj) => (
@@ -80,15 +82,15 @@ export default function Projects({ data, theme }: Props) {
                     <div className="flex items-start gap-2">
                       <div className="flex-1">
                         <p style={{ whiteSpace: 'pre-wrap' }}>
-                          <span className="font-medium" style={{ color: theme.colors.accent }}>Challenge: </span>
+                          <span className="font-medium" style={{ color: theme.colors.accent }}>{getCarLabel('challenge', lang)}: </span>
                           {ach.challenge}
                         </p>
                         <p style={{ whiteSpace: 'pre-wrap' }}>
-                          <span className="font-medium" style={{ color: theme.colors.accent }}>Action: </span>
+                          <span className="font-medium" style={{ color: theme.colors.accent }}>{getCarLabel('action', lang)}: </span>
                           {ach.action}
                         </p>
                         <p style={{ whiteSpace: 'pre-wrap' }}>
-                          <span className="font-medium" style={{ color: theme.colors.accent }}>Result: </span>
+                          <span className="font-medium" style={{ color: theme.colors.accent }}>{getCarLabel('result', lang)}: </span>
                           {ach.result}
                         </p>
                       </div>
@@ -99,9 +101,9 @@ export default function Projects({ data, theme }: Props) {
                             backgroundColor: ELITE_COLORS[ach.eliteCategory].bg,
                             color: ELITE_COLORS[ach.eliteCategory].text,
                           }}
-                          title={ELITE_COLORS[ach.eliteCategory].label}
+                          title={getEliteLabel(ach.eliteCategory, lang)}
                         >
-                          {ELITE_COLORS[ach.eliteCategory].label}
+                          {getEliteLabel(ach.eliteCategory, lang)}
                         </span>
                       )}
                     </div>

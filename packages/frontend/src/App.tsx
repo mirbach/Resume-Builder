@@ -21,7 +21,7 @@ const APP_MODE_KEY = 'resume_app_mode';
 const THEME_KEY = 'resume_theme';
 
 /** Renders a ResumeLayout at full A4 width (794px) and scales it down to fit its container. */
-function ScaledPreview({ resume, theme }: { resume: ResolvedResume; theme: ResumeTheme }) {
+function ScaledPreview({ resume, theme, lang }: { resume: ResolvedResume; theme: ResumeTheme; lang: Language }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [zoom, setZoom] = useState(1);
   const A4_WIDTH = 794; // px — 210mm at 96 dpi
@@ -40,7 +40,7 @@ function ScaledPreview({ resume, theme }: { resume: ResolvedResume; theme: Resum
   return (
     <div ref={containerRef} className="w-full">
       <div style={{ width: A4_WIDTH, zoom }}>
-        <ResumeLayout resume={resume} theme={theme} />
+        <ResumeLayout resume={resume} theme={theme} lang={lang} />
       </div>
     </div>
   );
@@ -357,7 +357,7 @@ export default function App() {
         {/* Full-page resume preview */}
         <div className="flex-1 overflow-y-auto p-6">
           <div id="print-resume">
-            <ResumeLayout resume={resolved} theme={theme} />
+            <ResumeLayout resume={resolved} theme={theme} lang={language} />
           </div>
         </div>
       </div>
@@ -490,7 +490,7 @@ export default function App() {
               <ResumeEditor data={resumeData} onChange={handleResumeChange} />
             </div>
             <div className="w-1/2 overflow-y-auto p-4 bg-gray-200 dark:bg-gray-700">
-              <ScaledPreview resume={resolved} theme={theme} />
+              <ScaledPreview resume={resolved} theme={theme} lang={language} />
             </div>
           </div>
 

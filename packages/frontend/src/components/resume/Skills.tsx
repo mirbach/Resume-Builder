@@ -1,12 +1,14 @@
-import type { ResolvedSkillCategory, ResumeTheme } from '../../lib/types';
+import type { ResolvedSkillCategory, ResumeTheme, Language } from '../../lib/types';
 import { lightTint } from '../../lib/colorUtils';
+import { getSectionLabel } from '../../lib/sectionLabels';
 
 interface Props {
   data: ResolvedSkillCategory[];
   theme: ResumeTheme;
+  lang: Language;
 }
 
-export default function Skills({ data, theme }: Props) {
+export default function Skills({ data, theme, lang }: Props) {
   if (!data.length) return null;
 
   return (
@@ -19,7 +21,7 @@ export default function Skills({ data, theme }: Props) {
           fontFamily: theme.fonts.heading,
         }}
       >
-        Skills
+        {getSectionLabel('skills', lang)}
       </h2>
       <div className="space-y-2">
         {data.map((cat) => (
