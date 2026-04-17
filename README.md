@@ -1,7 +1,7 @@
 # Resume Builder
 
 A bilingual (EN/DE) consulting resume builder built around the **CAR** (Challenge–Action–Result) and **ELITE** (Experience–Leadership–Impact–Transformation–Excellence) frameworks. Enter your data once in both languages, preview it live, and export a branded PDF per client engagement.
-<img width="2826" height="1526" alt="image" src="https://github.com/user-attachments/assets/d26ecc1e-8bbd-4449-b07e-f28c109acf3b" />
+<img alt="image" src="https://github.com/user-attachments/assets/d26ecc1e-8bbd-4449-b07e-f28c109acf3b" />
 
 ---
 
