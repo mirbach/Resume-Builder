@@ -18,6 +18,7 @@ type SaveStatus = 'idle' | 'saving' | 'saved' | 'error';
 type AppMode = 'preview' | 'editor';
 
 const APP_MODE_KEY = 'resume_app_mode';
+const THEME_KEY = 'resume_theme';
 
 /** Renders a ResumeLayout at full A4 width (794px) and scales it down to fit its container. */
 function ScaledPreview({ resume, theme }: { resume: ResolvedResume; theme: ResumeTheme }) {
@@ -48,7 +49,7 @@ function ScaledPreview({ resume, theme }: { resume: ResolvedResume; theme: Resum
 export default function App() {
   const [resumeData, setResumeData] = useState<ResumeData | null>(null);
   const [theme, setTheme] = useState<ResumeTheme | null>(null);
-  const [themeName, setThemeName] = useState('default');
+  const [themeName, setThemeName] = useState(() => localStorage.getItem(THEME_KEY) || 'default');
   const [language, setLanguage] = useState<Language>('en');
   const [saveStatus, setSaveStatus] = useState<SaveStatus>('idle');
   const [loading, setLoading] = useState(true);
@@ -91,14 +92,20 @@ export default function App() {
         setResumeData(resume);
 
         let themeData: ResumeTheme | null = null;
+        const savedTheme = localStorage.getItem(THEME_KEY) || 'default';
         try {
-          themeData = await getTheme('default');
-          setThemeName('default');
+          themeData = await getTheme(savedTheme);
+          setThemeName(savedTheme);
         } catch {
-          const list = await getThemes();
-          if (list.length === 0) throw new Error('No themes found.');
-          themeData = await getTheme(list[0].filename);
-          setThemeName(list[0].filename);
+          try {
+            themeData = await getTheme('default');
+            setThemeName('default');
+          } catch {
+            const list = await getThemes();
+            if (list.length === 0) throw new Error('No themes found.');
+            themeData = await getTheme(list[0].filename);
+            setThemeName(list[0].filename);
+          }
         }
         setTheme(themeData);
 
@@ -120,19 +127,29 @@ export default function App() {
     sessionStorage.setItem(APP_MODE_KEY, mode);
   }, [mode]);
 
+  useEffect(() => {
+    localStorage.setItem(THEME_KEY, themeName);
+  }, [themeName]);
+
   // Load resume + theme data (used after OAuth exchange)
   async function loadResumeData() {
     const resume = await getResume();
     setResumeData(resume);
     let themeData: ResumeTheme | null = null;
+    const savedTheme = localStorage.getItem(THEME_KEY) || 'default';
     try {
-      themeData = await getTheme('default');
-      setThemeName('default');
+      themeData = await getTheme(savedTheme);
+      setThemeName(savedTheme);
     } catch {
-      const list = await getThemes();
-      if (list.length > 0) {
-        themeData = await getTheme(list[0].filename);
-        setThemeName(list[0].filename);
+      try {
+        themeData = await getTheme('default');
+        setThemeName('default');
+      } catch {
+        const list = await getThemes();
+        if (list.length > 0) {
+          themeData = await getTheme(list[0].filename);
+          setThemeName(list[0].filename);
+        }
       }
     }
     if (themeData) setTheme(themeData);
