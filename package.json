@@ -15,7 +15,7 @@
     "kv:create": "wrangler kv namespace create RESUME_KV && wrangler kv namespace create RESUME_KV --preview"
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "^4.20260416.2",
+    "@cloudflare/workers-types": "^4.20260417.1",
     "concurrently": "^9.1.0",
     "wrangler": "^4.83.0"
   }

@@ -1,3 +1,4 @@
+// @ts-nocheck -- @react-pdf/renderer class components are incompatible with React 19 JSX.ElementClass; tracked upstream
 import {
   Document,
   Page,

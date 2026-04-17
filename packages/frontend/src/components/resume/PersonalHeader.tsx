@@ -1,5 +1,5 @@
 import type { ResolvedPersonalInfo, ResumeTheme } from '../../lib/types';
-import { Mail, Phone, MapPin, Linkedin, Github, Globe } from 'lucide-react';
+import { Mail, Phone, MapPin, Briefcase, GitFork, Globe } from 'lucide-react';
 
 interface Props {
   data: ResolvedPersonalInfo;
@@ -62,12 +62,12 @@ export default function PersonalHeader({ data, theme }: Props) {
             )}
             {data.github && (
               <span className="flex items-center gap-1">
-                <Github size={14} /> {data.github}
+                <GitFork size={14} /> {data.github}
               </span>
             )}
             {data.linkedin && (
               <span className="flex items-center gap-1">
-                <Linkedin size={14} /> {data.linkedin}
+                <Briefcase size={14} /> {data.linkedin}
               </span>
             )}
             {data.website && (
