@@ -428,7 +428,10 @@ function SectionProjects({ resume, styles }: { resume: ResolvedResume; styles: R
         <View key={proj.id} style={{ marginBottom: 6 }}>
           <View style={styles.entryHeader}>
             <Text style={styles.projName}>{proj.name}</Text>
-            {proj.link && <Text style={styles.projLink}>{proj.link}</Text>}
+            <View style={{ flexDirection: 'row', gap: 8 }}>
+              {!!proj.period && <Text style={styles.entryPeriod}>{proj.period}</Text>}
+              {!!proj.link && <Text style={styles.projLink}>{proj.link}</Text>}
+            </View>
           </View>
           {!!proj.description && <Text style={styles.projDesc}>{proj.description}</Text>}
           {proj.technologies.length > 0 && (

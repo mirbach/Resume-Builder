@@ -27,7 +27,7 @@ export function resolveResume(data: ResumeData, lang: Language): ResolvedResume 
       id: exp.id,
       company: exp.company,
       role: resolve(exp.role, lang),
-      period: exp.period,
+      period: resolve(exp.period, lang),
       location: resolve(exp.location, lang),
       achievements: exp.achievements.map((ach) => ({
         id: ach.id,
@@ -41,7 +41,7 @@ export function resolveResume(data: ResumeData, lang: Language): ResolvedResume 
       id: edu.id,
       institution: edu.institution,
       degree: resolve(edu.degree, lang),
-      period: edu.period,
+      period: resolve(edu.period, lang),
       details: edu.details ? resolve(edu.details, lang) : undefined,
     })),
     skills: data.skills.map((s) => ({
@@ -61,6 +61,7 @@ export function resolveResume(data: ResumeData, lang: Language): ResolvedResume 
       description: resolve(p.description, lang),
       technologies: p.technologies,
       link: p.link,
+      period: p.period ? resolve(p.period, lang) : undefined,
       achievements: (p.achievements ?? []).map((ach) => ({
         id: ach.id,
         challenge: resolve(ach.challenge, lang),

@@ -33,7 +33,7 @@ export interface ExperienceEntry {
   id: string;
   company: string;
   role: BilingualText;
-  period: string;
+  period: BilingualText;
   location: BilingualText;
   achievements: Achievement[];
 }
@@ -42,7 +42,7 @@ export interface EducationEntry {
   id: string;
   institution: string;
   degree: BilingualText;
-  period: string;
+  period: BilingualText;
   details?: BilingualText;
 }
 
@@ -72,6 +72,7 @@ export interface ProjectEntry {
   description: BilingualText;
   technologies: string[];
   link?: string;
+  period?: BilingualText;
   achievements: Achievement[];
 }
 
@@ -267,6 +268,7 @@ export interface ResolvedProject {
   description: string;
   technologies: string[];
   link?: string;
+  period?: string;
   achievements: ResolvedProjectAchievement[];
 }
 

@@ -2,5 +2,6 @@
   "sonarlint.rules": {
     "Web:InlineStyleUsedCheck": { "level": "off" },
     "javascript:S6849": { "level": "off" }
-  }
+  },
+  "css.lint.unknownAtRules": "ignore"
 }

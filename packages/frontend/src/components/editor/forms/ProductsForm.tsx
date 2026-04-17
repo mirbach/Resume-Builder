@@ -32,6 +32,14 @@ export default function ProductsForm({ data, onChange }: Props) {
     onChange(data.filter((_, i) => i !== index));
   }
 
+  function moveEntry(index: number, direction: -1 | 1) {
+    const newIndex = index + direction;
+    if (newIndex < 0 || newIndex >= data.length) return;
+    const updated = [...data];
+    [updated[index], updated[newIndex]] = [updated[newIndex], updated[index]];
+    onChange(updated);
+  }
+
   function addHighlight(index: number) {
     const updated = [...data];
     updated[index] = {
@@ -78,9 +86,11 @@ export default function ProductsForm({ data, onChange }: Props) {
         <div key={entry.id} className="entry-card rounded-lg border border-gray-200 bg-white p-4 space-y-3">
           <div className="flex items-center justify-between">
             <span className="entry-label text-sm font-medium text-gray-500">{entry.name || 'New Product'}</span>
-            <button onClick={() => removeEntry(index)} aria-label="Remove product" className="text-red-400 hover:text-red-600">
-              <Trash2 size={16} />
-            </button>
+            <div className="flex items-center gap-1">
+              <button onClick={() => moveEntry(index, -1)} aria-label="Move up" className="p-1 text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-200">↑</button>
+              <button onClick={() => moveEntry(index, 1)} aria-label="Move down" className="p-1 text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-200">↓</button>
+              <button onClick={() => removeEntry(index)} aria-label="Remove product" className="p-1 text-red-400 hover:text-red-600"><Trash2 size={16} /></button>
+            </div>
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700">Name</label>

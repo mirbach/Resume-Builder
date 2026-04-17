@@ -26,6 +26,14 @@ export default function SkillsForm({ data, onChange }: Props) {
     onChange(data.filter((_, i) => i !== index));
   }
 
+  function moveCategory(index: number, direction: -1 | 1) {
+    const newIndex = index + direction;
+    if (newIndex < 0 || newIndex >= data.length) return;
+    const updated = [...data];
+    [updated[index], updated[newIndex]] = [updated[newIndex], updated[index]];
+    onChange(updated);
+  }
+
   function addSkill(index: number) {
     const skill = newSkills[data[index].id]?.trim();
     if (!skill) return;
@@ -62,13 +70,11 @@ export default function SkillsForm({ data, onChange }: Props) {
             <span className="entry-label text-sm font-medium text-gray-500">
               {cat.category.en || 'New Category'}
             </span>
-            <button
-              onClick={() => removeCategory(catIndex)}
-              aria-label="Remove category"
-              className="text-red-400 hover:text-red-600"
-            >
-              <Trash2 size={16} />
-            </button>
+            <div className="flex items-center gap-1">
+              <button onClick={() => moveCategory(catIndex, -1)} aria-label="Move up" className="p-1 text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-200">↑</button>
+              <button onClick={() => moveCategory(catIndex, 1)} aria-label="Move down" className="p-1 text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-200">↓</button>
+              <button onClick={() => removeCategory(catIndex)} aria-label="Remove category" className="p-1 text-red-400 hover:text-red-600"><Trash2 size={16} /></button>
+            </div>
           </div>
 
           <BilingualField

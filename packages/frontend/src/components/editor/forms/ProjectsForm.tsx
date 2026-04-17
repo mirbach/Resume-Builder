@@ -159,6 +159,13 @@ export default function ProjectsForm({ data, onChange }: Props) {
               </div>
 
               <BilingualField
+                label="Period (optional)"
+                value={entry.period ?? { en: '', de: '' }}
+                onChange={(period) => updateEntry(entryIndex, { ...entry, period: (period.en || period.de) ? period : undefined })}
+                placeholder={{ en: '2022 – 2023', de: '2022 – 2023' }}
+              />
+
+              <BilingualField
                 label="Description"
                 value={entry.description}
                 onChange={(description) => updateEntry(entryIndex, { ...entry, description })}

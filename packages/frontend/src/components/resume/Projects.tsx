@@ -36,11 +36,18 @@ export default function Projects({ data, theme }: Props) {
               <h3 className="font-semibold text-sm" style={{ color: theme.colors.heading }}>
                 {proj.name}
               </h3>
-              {proj.link && (
-                <span className="text-xs" style={{ color: theme.colors.accent }}>
-                  {proj.link}
-                </span>
-              )}
+              <div className="flex items-baseline gap-3">
+                {proj.period && (
+                  <span className="text-xs" style={{ color: theme.colors.secondary }}>
+                    {proj.period}
+                  </span>
+                )}
+                {proj.link && (
+                  <span className="text-xs" style={{ color: theme.colors.accent }}>
+                    {proj.link}
+                  </span>
+                )}
+              </div>
             </div>
             {proj.description && (
               <p className="text-sm mt-0.5" style={{ color: theme.colors.text, whiteSpace: 'pre-wrap' }}>

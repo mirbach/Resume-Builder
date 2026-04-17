@@ -12,7 +12,7 @@
       "de": "Bonn, Deutschland"
     },
     "linkedin": "linkedin.com/in/maxmustermann",
-    "photo": "/api/uploads/de01cd27-c88c-4d62-94a4-e71d2fa9975b.jpg"
+    "photo": "/api/uploads/3eedeec8-cef6-4084-84a8-4025c2ed2820.jpg"
   },
   "summary": {
     "en": "Experienced software engineer with 10+ years of expertise in building scalable web applications and leading cross-functional teams. Passionate about clean architecture, DevOps practices, and mentoring junior developers. Proven track record of delivering high-impact projects that drive business growth.\n\ntest\ntest",
@@ -26,7 +26,24 @@
         "en": "Senior Software Engineer",
         "de": "Senior Softwareentwickler"
       },
-      "period": "2020 - Present",
+      "period": {
+        "0": "2",
+        "1": "0",
+        "2": "2",
+        "3": "0",
+        "4": " ",
+        "5": "-",
+        "6": " ",
+        "7": "P",
+        "8": "r",
+        "9": "e",
+        "10": "s",
+        "11": "e",
+        "12": "n",
+        "13": "t",
+        "en": "2202 - Present",
+        "de": "2020 - Heute"
+      },
       "location": {
         "en": "Munich, Germany",
         "de": "München, Deutschland"
@@ -73,7 +90,10 @@
         "en": "Full Stack Developer",
         "de": "Full-Stack-Entwickler"
       },
-      "period": "2017 - 2020",
+      "period": {
+        "en": "2017 - 2020",
+        "de": "2017 - 2020"
+      },
       "location": {
         "en": "Berlin, Germany",
         "de": "Berlin, Deutschland"
@@ -104,7 +124,10 @@
         "en": "",
         "de": ""
       },
-      "period": "",
+      "period": {
+        "en": "",
+        "de": ""
+      },
       "location": {
         "en": "",
         "de": ""
@@ -136,7 +159,10 @@
         "en": "M.Sc. Computer Science",
         "de": "M.Sc. Informatik"
       },
-      "period": "2013 - 2015",
+      "period": {
+        "en": "2013 - 2015",
+        "de": "2013 - 2015"
+      },
       "details": {
         "en": "Focus on distributed systems and machine learning. Thesis: 'Scalable Event Processing in Cloud Environments'",
         "de": "Schwerpunkt verteilte Systeme und maschinelles Lernen. Abschlussarbeit: 'Skalierbare Ereignisverarbeitung in Cloud-Umgebungen'"
@@ -149,25 +175,13 @@
         "en": "B.Sc. Computer Science",
         "de": "B.Sc. Informatik"
       },
-      "period": "2010 - 2013"
+      "period": {
+        "en": "2010 - 2013",
+        "de": "2010 - 2013"
+      }
     }
   ],
   "skills": [
-    {
-      "id": "skill-1",
-      "category": {
-        "en": "Programming Languages",
-        "de": "Programmiersprachen"
-      },
-      "items": [
-        "TypeScript",
-        "JavaScript",
-        "Python",
-        "Go",
-        "Java",
-        "C#"
-      ]
-    },
     {
       "id": "skill-2",
       "category": {
@@ -181,6 +195,21 @@
         "Next.js",
         "FastAPI",
         ".NET"
+      ]
+    },
+    {
+      "id": "skill-1",
+      "category": {
+        "en": "Programming Languages",
+        "de": "Programmiersprachen"
+      },
+      "items": [
+        "TypeScript",
+        "JavaScript",
+        "Python",
+        "Go",
+        "Java",
+        "C#"
       ]
     },
     {

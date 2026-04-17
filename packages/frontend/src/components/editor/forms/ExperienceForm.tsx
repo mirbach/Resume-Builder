@@ -31,7 +31,7 @@ function newExperience(): ExperienceEntry {
     id: uuidv4(),
     company: '',
     role: { en: '', de: '' },
-    period: '',
+    period: { en: '', de: '' },
     location: { en: '', de: '' },
     achievements: [newAchievement()],
   };
@@ -135,7 +135,7 @@ export default function ExperienceForm({ data, onChange }: Props) {
                 <span className="text-gray-500 dark:text-gray-300 ml-2">at {entry.company}</span>
               )}
               {entry.period && (
-                <span className="text-gray-400 dark:text-gray-400 ml-2 text-sm">{entry.period}</span>
+                <span className="text-gray-400 dark:text-gray-400 ml-2 text-sm">{entry.period.en || entry.period.de}</span>
               )}
             </div>
             <div className="flex items-center gap-1">
@@ -177,17 +177,14 @@ export default function ExperienceForm({ data, onChange }: Props) {
                     placeholder="TechCorp GmbH"
                   />
                 </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">Period</label>
-                  <input
-                    type="text"
-                    className={inputClasses}
-                    value={entry.period}
-                    onChange={(e) => updateEntry(entryIndex, { ...entry, period: e.target.value })}
-                    placeholder="2020 - Present"
-                  />
-                </div>
               </div>
+
+              <BilingualField
+                label="Period"
+                value={entry.period}
+                onChange={(period) => updateEntry(entryIndex, { ...entry, period })}
+                placeholder={{ en: '2020 – Present', de: '2020 – Heute' }}
+              />
 
               <BilingualField
                 label="Role"
