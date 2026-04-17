@@ -153,6 +153,8 @@ Supported providers (configure in Settings):
 | xAI Grok | `grok-3-mini` |
 | Google Gemini | `gemini-2.0-flash` |
 
+<img width="1368" height="1528" alt="image" src="https://github.com/user-attachments/assets/4bc8bf05-07d9-47a2-aeec-33e5e1a5e161" />
+
 ---
 
 ## Translation
