@@ -49,7 +49,7 @@ export interface EducationEntry {
 export interface SkillCategory {
   id: string;
   category: BilingualText;
-  items: string[];
+  items: BilingualText[];
 }
 
 export interface CertificationEntry {

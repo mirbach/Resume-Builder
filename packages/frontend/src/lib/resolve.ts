@@ -47,7 +47,9 @@ export function resolveResume(data: ResumeData, lang: Language): ResolvedResume 
     skills: data.skills.map((s) => ({
       id: s.id,
       category: resolve(s.category, lang),
-      items: s.items,
+      items: s.items
+        .map((item) => (typeof item === 'string' ? (item as string) : item[lang] ?? ''))
+        .filter(Boolean),
     })),
     certifications: data.certifications.map((c) => ({
       id: c.id,
