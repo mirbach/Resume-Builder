@@ -17,8 +17,10 @@ interface DragSkill {
 export default function SkillsForm({ data, onChange }: Props) {
   const [newSkills, setNewSkills] = useState<Record<string, BilingualText>>({});
   const [dragging, setDragging] = useState<DragSkill | null>(null);
+  const [dragLang, setDragLang] = useState<'en' | 'de' | null>(null);
   const [dragOverCat, setDragOverCat] = useState<number | null>(null);
   const [dragOverItem, setDragOverItem] = useState<DragSkill | null>(null);
+  const [isCopyMode, setIsCopyMode] = useState(false);
 
   function addCategory() {
     onChange([...data, { id: uuidv4(), category: { en: '', de: '' }, items: [] }]);
@@ -60,14 +62,17 @@ export default function SkillsForm({ data, onChange }: Props) {
     onChange(updated);
   }
 
-  function handleSkillDragStart(catIndex: number, skillIndex: number) {
+  function handleSkillDragStart(catIndex: number, skillIndex: number, lang: 'en' | 'de') {
     setDragging({ catIndex, skillIndex });
+    setDragLang(lang);
   }
 
   function handleSkillDragEnd() {
     setDragging(null);
+    setDragLang(null);
     setDragOverCat(null);
     setDragOverItem(null);
+    setIsCopyMode(false);
   }
 
   function handleCategoryDragOver(e: React.DragEvent, catIndex: number) {
@@ -92,18 +97,41 @@ export default function SkillsForm({ data, onChange }: Props) {
     setDragOverItem(null);
   }
 
-  function handleChipDragOver(e: React.DragEvent, catIndex: number, skillIndex: number) {
+  function handleChipDragOver(e: React.DragEvent, catIndex: number, skillIndex: number, targetLang: 'en' | 'de') {
     if (!dragging) return;
     e.preventDefault();
     e.stopPropagation();
     setDragOverItem({ catIndex, skillIndex });
     setDragOverCat(null);
+    setIsCopyMode(e.ctrlKey && dragLang !== null && dragLang !== targetLang);
   }
 
-  function handleChipDrop(e: React.DragEvent, targetCatIndex: number, targetSkillIndex: number) {
+  function copySkillToLang(sourceItem: BilingualText | string, sourceLang: 'en' | 'de', targetCatIndex: number, targetSkillIndex: number) {
+    const sourceText = typeof sourceItem === 'string' ? sourceItem : sourceItem[sourceLang];
+    if (!sourceText) return;
+    const otherLang = sourceLang === 'en' ? 'de' : 'en';
+    const newItem: BilingualText = { en: '', de: '', [otherLang]: sourceText };
+    const updated = data.map((cat) => ({ ...cat, items: [...cat.items] }));
+    updated[targetCatIndex].items.splice(targetSkillIndex, 0, newItem);
+    onChange(updated);
+  }
+
+  function handleChipDrop(e: React.DragEvent, targetCatIndex: number, targetSkillIndex: number, targetLang: 'en' | 'de') {
     e.preventDefault();
     e.stopPropagation();
     if (!dragging) return;
+
+    // Ctrl+drop across language columns: insert a new skill with the source text in the target language
+    if (e.ctrlKey && dragLang !== null && dragLang !== targetLang) {
+      const sourceItem = data[dragging.catIndex].items[dragging.skillIndex];
+      copySkillToLang(sourceItem, dragLang, targetCatIndex, targetSkillIndex);
+      setDragging(null);
+      setDragLang(null);
+      setDragOverItem(null);
+      setIsCopyMode(false);
+      return;
+    }
+
     if (dragging.catIndex === targetCatIndex && dragging.skillIndex === targetSkillIndex) {
       setDragging(null);
       setDragOverItem(null);
@@ -114,7 +142,23 @@ export default function SkillsForm({ data, onChange }: Props) {
 
   function handleCategoryDrop(e: React.DragEvent, targetCatIndex: number) {
     e.preventDefault();
-    if (!dragging || dragging.catIndex === targetCatIndex) {
+    if (!dragging) {
+      setDragOverCat(null);
+      return;
+    }
+
+    // Ctrl+drop onto a different-language category zone: insert copy
+    if (e.ctrlKey && dragLang !== null) {
+      const sourceItem = data[dragging.catIndex].items[dragging.skillIndex];
+      copySkillToLang(sourceItem, dragLang, targetCatIndex, data[targetCatIndex].items.length);
+      setDragging(null);
+      setDragLang(null);
+      setDragOverCat(null);
+      setIsCopyMode(false);
+      return;
+    }
+
+    if (dragging.catIndex === targetCatIndex) {
       setDragging(null);
       setDragOverCat(null);
       return;
@@ -169,7 +213,12 @@ export default function SkillsForm({ data, onChange }: Props) {
             <div className="grid grid-cols-2 gap-2 mb-2">
               {(['en', 'de'] as const).map((lang) => (
                 <div key={lang} className="rounded-md border border-gray-100 bg-gray-50 dark:bg-gray-800/40 p-2 min-h-[3rem]">
-                  <div className="text-xs font-semibold text-gray-400 uppercase mb-1.5">{lang}</div>
+                  <div className="flex items-center gap-1.5 mb-1.5">
+                    <div className="text-xs font-semibold text-gray-400 uppercase">{lang}</div>
+                    {dragging && dragLang !== null && dragLang !== lang && (
+                      <div className="text-xs text-gray-400 italic">hold Ctrl to copy</div>
+                    )}
+                  </div>
                   <div className="flex flex-wrap gap-1.5">
                     {cat.items.length === 0 && dragOverCat === catIndex && dragging?.catIndex !== catIndex && lang === 'en' && (
                       <span className="text-xs text-blue-500 italic">Drop here</span>
@@ -183,14 +232,16 @@ export default function SkillsForm({ data, onChange }: Props) {
                         <span
                           key={skillIndex}
                           draggable
-                          onDragStart={() => handleSkillDragStart(catIndex, skillIndex)}
+                          onDragStart={() => handleSkillDragStart(catIndex, skillIndex, lang)}
                           onDragEnd={handleSkillDragEnd}
-                          onDragOver={(e) => handleChipDragOver(e, catIndex, skillIndex)}
-                          onDragLeave={() => setDragOverItem(null)}
-                          onDrop={(e) => handleChipDrop(e, catIndex, skillIndex)}
+                          onDragOver={(e) => handleChipDragOver(e, catIndex, skillIndex, lang)}
+                          onDragLeave={() => { setDragOverItem(null); setIsCopyMode(false); }}
+                          onDrop={(e) => handleChipDrop(e, catIndex, skillIndex, lang)}
                           className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-sm cursor-grab active:cursor-grabbing select-none transition-all ${
                             isBeingDragged
                               ? 'opacity-40 bg-blue-100 dark:bg-blue-800/40 text-blue-400'
+                              : isDropTarget && isCopyMode
+                              ? 'bg-green-50 dark:bg-green-900/40 text-green-700 dark:text-green-300 ring-2 ring-green-400 ring-offset-1'
                               : isDropTarget
                               ? 'bg-blue-50 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 ring-2 ring-blue-400 ring-offset-1'
                               : 'bg-blue-50 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300'
@@ -211,17 +262,17 @@ export default function SkillsForm({ data, onChange }: Props) {
                 </div>
               ))}
             </div>
-            <div className="flex gap-2 items-end">
-              <div className="flex-1 flex gap-2">
-                <input
-                  type="text"
-                  className="flex-1 rounded-md border border-gray-300 px-3 py-1.5 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none"
-                  value={newSkills[cat.id]?.en ?? ''}
-                  onChange={(e) => setNewSkills({ ...newSkills, [cat.id]: { ...(newSkills[cat.id] ?? { en: '', de: '' }), en: e.target.value } })}
-                  onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), addSkill(catIndex))}
-                  placeholder="EN: e.g. TypeScript"
-                  aria-label="New skill (English)"
-                />
+            <div className="grid grid-cols-2 gap-2">
+              <input
+                type="text"
+                className="rounded-md border border-gray-300 px-3 py-1.5 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none"
+                value={newSkills[cat.id]?.en ?? ''}
+                onChange={(e) => setNewSkills({ ...newSkills, [cat.id]: { ...(newSkills[cat.id] ?? { en: '', de: '' }), en: e.target.value } })}
+                onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), addSkill(catIndex))}
+                placeholder="EN: e.g. TypeScript"
+                aria-label="New skill (English)"
+              />
+              <div className="flex gap-2">
                 <input
                   type="text"
                   className="flex-1 rounded-md border border-gray-300 px-3 py-1.5 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none"
@@ -231,13 +282,13 @@ export default function SkillsForm({ data, onChange }: Props) {
                   placeholder="DE: z.B. TypeScript"
                   aria-label="New skill (German)"
                 />
+                <button
+                  onClick={() => addSkill(catIndex)}
+                  className="rounded-md bg-gray-100 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600 px-3 py-1.5 text-sm text-gray-700 hover:bg-gray-200 shrink-0"
+                >
+                  Add
+                </button>
               </div>
-              <button
-                onClick={() => addSkill(catIndex)}
-                className="rounded-md bg-gray-100 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600 px-3 py-1.5 text-sm text-gray-700 hover:bg-gray-200"
-              >
-                Add
-              </button>
             </div>
           </div>
         </div>
