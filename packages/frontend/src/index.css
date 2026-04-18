@@ -30,6 +30,13 @@
 
 /* ---- Print styles ---- */
 @media print {
+  /* Force light mode for print — prevents dark color-scheme (Brave/Chromium on Linux)
+     from rendering the page background black */
+  html, body {
+    background: white !important;
+    color-scheme: light !important;
+  }
+
   /* Hide every node but allow descendants to reveal themselves */
   body * { visibility: hidden; }
 
@@ -37,12 +44,17 @@
   #print-resume,
   #print-resume * { visibility: visible; }
 
-  /* Position it at the top-left so it fills the printed page */
+  /* Position it at the top-left so it fills the printed page.
+     position:absolute instead of fixed — position:fixed is misrendered on
+     Chromium-based browsers on Linux (Brave, Chrome) and produces a black page. */
   #print-resume {
-    position: fixed;
-    inset: 0;
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
     overflow: visible;
-    background: white;
+    background: white !important;
+    color-scheme: light !important;
   }
 
   /* Remove card chrome */
