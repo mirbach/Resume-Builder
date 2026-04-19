@@ -62,7 +62,10 @@ export function exportResumeJson(data: ResumeData): void {
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
-  a.download = 'resume.json';
+  const name = (data.personal?.name || 'Resume').trim().replace(/\s+/g, '-');
+  const now = new Date();
+  const datetime = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}_${String(now.getHours()).padStart(2, '0')}-${String(now.getMinutes()).padStart(2, '0')}`;
+  a.download = `${name}-Resume-${datetime}.json`;
   a.click();
   URL.revokeObjectURL(url);
 }
