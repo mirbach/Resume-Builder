@@ -27,6 +27,7 @@ export function resolveResume(data: ResumeData, lang: Language): ResolvedResume 
       id: exp.id,
       company: exp.company,
       role: resolve(exp.role, lang),
+      description: exp.description ? resolve(exp.description, lang) : undefined,
       period: resolve(exp.period, lang),
       location: resolve(exp.location, lang),
       achievements: exp.achievements.map((ach) => ({

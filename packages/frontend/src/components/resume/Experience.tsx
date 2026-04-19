@@ -51,6 +51,12 @@ export default function Experience({ data, theme, lang }: Props) {
               </span>
             </div>
 
+            {exp.description && (
+              <p className="mt-1 text-sm" style={{ color: theme.colors.text, whiteSpace: 'pre-wrap' }}>
+                {exp.description}
+              </p>
+            )}
+
             {exp.achievements.length > 0 && (
               <ul className="mt-2 space-y-2">
                 {exp.achievements.filter(a => a.challenge || a.action || a.result).map((ach) => (

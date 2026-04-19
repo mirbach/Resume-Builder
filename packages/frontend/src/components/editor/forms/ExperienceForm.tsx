@@ -33,6 +33,7 @@ function newExperience(): ExperienceEntry {
     id: uuidv4(),
     company: '',
     role: { en: '', de: '' },
+    description: { en: '', de: '' },
     period: { en: '', de: '' },
     location: { en: '', de: '' },
     achievements: [],
@@ -193,6 +194,14 @@ export default function ExperienceForm({ data, onChange, lang = 'en' }: Props) {
                 value={entry.role}
                 onChange={(role) => updateEntry(entryIndex, { ...entry, role })}
                 placeholder={{ en: 'Senior Software Engineer', de: 'Senior Softwareentwickler' }}
+              />
+
+              <BilingualField
+                label="Description"
+                value={entry.description ?? { en: '', de: '' }}
+                onChange={(description) => updateEntry(entryIndex, { ...entry, description })}
+                placeholder={{ en: 'Brief overview of responsibilities and scope', de: 'Kurze Übersicht der Aufgaben und des Umfangs' }}
+                multiline
               />
 
               <BilingualField

@@ -33,6 +33,7 @@ export interface ExperienceEntry {
   id: string;
   company: string;
   role: BilingualText;
+  description?: BilingualText;
   period: BilingualText;
   location: BilingualText;
   achievements: Achievement[];

@@ -311,6 +311,9 @@ function SectionExperience({ resume, styles, lang }: { resume: ResolvedResume; s
             </View>
             <Text style={styles.entryPeriod}>{exp.period}</Text>
           </View>
+          {exp.description ? (
+            <Text style={[styles.achText, { marginTop: 2, marginBottom: 2 }]}>{exp.description}</Text>
+          ) : null}
           {exp.achievements.filter(a => a.challenge || a.action || a.result).map((ach) => (
             <View key={ach.id} style={[styles.achievement, { flexDirection: 'row' }]}>
               <View style={{ flex: 1 }}>

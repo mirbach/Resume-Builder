@@ -33,6 +33,7 @@ export interface ExperienceEntry {
   id: string;
   company: string;
   role: BilingualText;
+  description?: BilingualText;
   period: BilingualText;
   location: BilingualText;
   achievements: Achievement[];
@@ -256,6 +257,7 @@ export interface ResolvedExperience {
   id: string;
   company: string;
   role: string;
+  description?: string;
   period: string;
   location: string;
   achievements: ResolvedAchievement[];
