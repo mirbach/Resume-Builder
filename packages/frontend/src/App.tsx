@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import type { ResumeData, ResumeTheme, AppSettings, Language, ResolvedResume } from './lib/types';
-import { getResume, saveResume, getTheme, getThemes, getSettings, setAuthToken, exportResumeJson, importResumeJson } from './lib/api';
-import { buildAuthUrl, exchangeCodeForToken, getApiToken, storeToken, validateOAuthState, clearToken, buildLogoutUrl } from './lib/auth';
+import { getResume, saveResume, getTheme, getThemes, getSettings, setAuthToken, exportResumeJson, importResumeJson, AuthExpiredError } from './lib/api';
+import { buildAuthUrl, exchangeCodeForToken, getApiToken, storeToken, validateOAuthState, clearToken, buildLogoutUrl, isTokenExpired } from './lib/auth';
 import { resolveResume } from './lib/resolve';
 import ResumeEditor from './components/editor/ResumeEditor';
 import ResumeLayout from './components/resume/ResumeLayout';
@@ -19,6 +19,7 @@ type AppMode = 'preview' | 'editor';
 
 const APP_MODE_KEY = 'resume_app_mode';
 const THEME_KEY = 'resume_theme';
+const REAUTH_KEY = 'auth_reauth_pending';
 
 /** Renders a ResumeLayout at full A4 width (794px) and scales it down to fit its container. */
 function ScaledPreview({ resume, theme, lang }: { resume: ResolvedResume; theme: ResumeTheme; lang: Language }) {
@@ -95,7 +96,29 @@ export default function App() {
 
         // Always load settings first (settings endpoint is public)
         const settingsResp = await getSettings().catch(() => null);
-        setAppSettings(settingsResp?.settings ?? null);
+        const settings = settingsResp?.settings ?? null;
+        setAppSettings(settings);
+
+        // If a 401 was caught mid-session, the token was cleared and a reload was triggered.
+        // Pick that up here and redirect to sign-in before doing anything else.
+        const reauthPending = sessionStorage.getItem(REAUTH_KEY) === '1';
+        if (reauthPending) {
+          sessionStorage.removeItem(REAUTH_KEY);
+          if (settings?.auth.enabled) {
+            const url = await buildAuthUrl(settings.auth);
+            window.location.href = url;
+            return;
+          }
+        }
+
+        // If auth is enabled and the stored token has expired, redirect to sign-in immediately.
+        if (settings?.auth.enabled && apiToken && isTokenExpired(apiToken)) {
+          clearToken();
+          setAuthToken(null);
+          const url = await buildAuthUrl(settings.auth);
+          window.location.href = url;
+          return;
+        }
 
         // If this is an OAuth callback (?code= present), skip the data fetch —
         // the OAuth callback effect will exchange the code, then load data.
@@ -128,7 +151,7 @@ export default function App() {
 
         // Restore editor mode on refresh when the session is still authenticated.
         const wantsEditor = sessionStorage.getItem(APP_MODE_KEY) === 'editor';
-        if (wantsEditor && (!settingsResp?.settings.auth.enabled || apiToken)) {
+        if (wantsEditor && (!settings?.auth.enabled || apiToken)) {
           setMode('editor');
         }
       } catch (err) {
@@ -226,9 +249,15 @@ export default function App() {
           setSaveStatus('saved');
           setTimeout(() => setSaveStatus('idle'), 2000);
         })
-        .catch(() => {
-          setSaveStatus('error');
-          setTimeout(() => setSaveStatus('idle'), 3000);
+        .catch((err: unknown) => {
+          if (err instanceof AuthExpiredError) {
+            clearToken();
+            sessionStorage.setItem(REAUTH_KEY, '1');
+            window.location.reload();
+          } else {
+            setSaveStatus('error');
+            setTimeout(() => setSaveStatus('idle'), 3000);
+          }
         });
     }, 1000);
   }, []);
@@ -401,7 +430,16 @@ export default function App() {
                   setSaveStatus('saving');
                   saveResume(resumeData)
                     .then(() => { setSaveStatus('saved'); setTimeout(() => setSaveStatus('idle'), 2000); })
-                    .catch(() => { setSaveStatus('error'); setTimeout(() => setSaveStatus('idle'), 3000); });
+                    .catch((err: unknown) => {
+                      if (err instanceof AuthExpiredError) {
+                        clearToken();
+                        sessionStorage.setItem(REAUTH_KEY, '1');
+                        window.location.reload();
+                      } else {
+                        setSaveStatus('error');
+                        setTimeout(() => setSaveStatus('idle'), 3000);
+                      }
+                    });
                 }}
                 className="flex items-center gap-1 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
               >

@@ -25,6 +25,14 @@ export function setAuthToken(token: string | null) {
   _authToken = token;
 }
 
+/** Thrown when the server responds with 401 — the session token has expired. */
+export class AuthExpiredError extends Error {
+  constructor(message = 'Session expired') {
+    super(message);
+    this.name = 'AuthExpiredError';
+  }
+}
+
 async function request<T>(url: string, options?: RequestInit): Promise<T> {
   const headers: Record<string, string> = {};
   if (!(options?.body instanceof FormData)) {
@@ -38,6 +46,9 @@ async function request<T>(url: string, options?: RequestInit): Promise<T> {
       ...(options?.headers as Record<string, string> | undefined),
     },
   });
+  if (res.status === 401) {
+    throw new AuthExpiredError();
+  }
   const json = (await res.json()) as ApiResponse<T>;
   if (!json.success) {
     throw new Error(json.error || 'API request failed');
@@ -130,6 +141,7 @@ async function requestSettingsRaw(url: string, options?: RequestInit): Promise<S
   if (!(options?.body instanceof FormData)) headers['Content-Type'] = 'application/json';
   if (_authToken) headers.Authorization = `Bearer ${_authToken}`;
   const res = await fetch(`${API_BASE}${url}`, { ...options, headers: { ...headers, ...(options?.headers as Record<string, string> | undefined) } });
+  if (res.status === 401) throw new AuthExpiredError();
   const json = (await res.json()) as ApiResponse<AppSettings> & { keysConfigured?: KeysConfigured };
   if (!json.success) throw new Error(json.error || 'API request failed');
   return {
