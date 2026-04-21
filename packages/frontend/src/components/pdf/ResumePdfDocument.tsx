@@ -290,7 +290,7 @@ function SectionPersonal({ resume, styles, theme }: { resume: ResolvedResume; st
 function SectionSummary({ resume, styles, lang }: { resume: ResolvedResume; styles: ReturnType<typeof createStyles>; lang: Language }) {
   if (!resume.summary) return null;
   return (
-    <View>
+    <View wrap={false}>
       <Text style={styles.sectionTitle}>{getSectionLabel('summary', lang)}</Text>
       <Text style={styles.bodyText}>{resume.summary}</Text>
     </View>
@@ -301,9 +301,9 @@ function SectionExperience({ resume, styles, lang }: { resume: ResolvedResume; s
   if (!resume.experience.length) return null;
   return (
     <View>
-      <Text style={styles.sectionTitle}>{getSectionLabel('experience', lang)}</Text>
-      {resume.experience.map((exp) => (
-        <View key={exp.id} style={{ marginBottom: 8 }}>
+      {resume.experience.map((exp, index) => (
+        <View key={exp.id} style={{ marginBottom: 8 }} wrap={false}>
+          {index === 0 && <Text style={styles.sectionTitle}>{getSectionLabel('experience', lang)}</Text>}
           <View style={styles.entryHeader}>
             <View>
               <Text style={styles.entryTitle}>{exp.role}</Text>
@@ -346,9 +346,9 @@ function SectionEducation({ resume, styles, lang }: { resume: ResolvedResume; st
   if (!resume.education.length) return null;
   return (
     <View>
-      <Text style={styles.sectionTitle}>{getSectionLabel('education', lang)}</Text>
-      {resume.education.map((edu) => (
-        <View key={edu.id} style={{ marginBottom: 4 }}>
+      {resume.education.map((edu, index) => (
+        <View key={edu.id} style={{ marginBottom: 4 }} wrap={false}>
+          {index === 0 && <Text style={styles.sectionTitle}>{getSectionLabel('education', lang)}</Text>}
           <View style={styles.entryHeader}>
             <View>
               <Text style={styles.entryTitle}>{edu.degree}</Text>
@@ -367,9 +367,9 @@ function SectionSkills({ resume, styles, lang }: { resume: ResolvedResume; style
   if (!resume.skills.length) return null;
   return (
     <View>
-      <Text style={styles.sectionTitle}>{getSectionLabel('skills', lang)}</Text>
-      {resume.skills.map((cat) => (
-        <View key={cat.id} style={styles.skillCategory}>
+      {resume.skills.map((cat, index) => (
+        <View key={cat.id} style={styles.skillCategory} wrap={false}>
+          {index === 0 && <Text style={styles.sectionTitle}>{getSectionLabel('skills', lang)}</Text>}
           <Text style={styles.skillCatName}>{cat.category}</Text>
           <View style={styles.tagRow}>
             {cat.items.map((item, i) => (
@@ -386,18 +386,20 @@ function SectionCertifications({ resume, styles, lang }: { resume: ResolvedResum
   if (!resume.certifications.length) return null;
   return (
     <View>
-      <Text style={styles.sectionTitle}>{getSectionLabel('certifications', lang)}</Text>
-      {resume.certifications.map((cert) => (
-        <View key={cert.id} style={styles.certRow}>
-          <Text>
-            {cert.url ? (
-              <Link src={cert.url} style={styles.certName}>{cert.name}</Link>
-            ) : (
-              <Text style={styles.certName}>{cert.name}</Text>
-            )}
-            <Text style={styles.certIssuer}> — {cert.issuer}</Text>
-          </Text>
-          <Text style={styles.certDate}>{cert.date}</Text>
+      {resume.certifications.map((cert, index) => (
+        <View key={cert.id} wrap={false}>
+          {index === 0 && <Text style={styles.sectionTitle}>{getSectionLabel('certifications', lang)}</Text>}
+          <View style={styles.certRow}>
+            <Text>
+              {cert.url ? (
+                <Link src={cert.url} style={styles.certName}>{cert.name}</Link>
+              ) : (
+                <Text style={styles.certName}>{cert.name}</Text>
+              )}
+              <Text style={styles.certIssuer}> — {cert.issuer}</Text>
+            </Text>
+            <Text style={styles.certDate}>{cert.date}</Text>
+          </View>
         </View>
       ))}
     </View>
@@ -407,7 +409,7 @@ function SectionCertifications({ resume, styles, lang }: { resume: ResolvedResum
 function SectionLanguages({ resume, styles, lang }: { resume: ResolvedResume; styles: ReturnType<typeof createStyles>; lang: Language }) {
   if (!resume.languages.length) return null;
   return (
-    <View>
+    <View wrap={false}>
       <Text style={styles.sectionTitle}>{getSectionLabel('languages', lang)}</Text>
       <View style={styles.langRow}>
         {resume.languages.map((langEntry) => (
@@ -425,9 +427,9 @@ function SectionProjects({ resume, styles, lang }: { resume: ResolvedResume; sty
   if (!resume.projects.length) return null;
   return (
     <View>
-      <Text style={styles.sectionTitle}>{getSectionLabel('projects', lang)}</Text>
-      {resume.projects.map((proj) => (
-        <View key={proj.id} style={{ marginBottom: 6 }}>
+      {resume.projects.map((proj, index) => (
+        <View key={proj.id} style={{ marginBottom: 6 }} wrap={false}>
+          {index === 0 && <Text style={styles.sectionTitle}>{getSectionLabel('projects', lang)}</Text>}
           <View style={styles.entryHeader}>
             <Text style={styles.projName}>
               {proj.name}
@@ -478,9 +480,9 @@ function SectionProducts({ resume, styles, lang }: { resume: ResolvedResume; sty
   if (!resume.products.length) return null;
   return (
     <View>
-      <Text style={styles.sectionTitle}>{getSectionLabel('products', lang)}</Text>
-      {resume.products.map((prod) => (
-        <View key={prod.id} style={{ marginBottom: 6 }}>
+      {resume.products.map((prod, index) => (
+        <View key={prod.id} style={{ marginBottom: 6 }} wrap={false}>
+          {index === 0 && <Text style={styles.sectionTitle}>{getSectionLabel('products', lang)}</Text>}
           <View style={{ flexDirection: 'row', alignItems: 'baseline', gap: 6 }}>
             <Text style={styles.prodName}>{prod.name}</Text>
             {prod.link && (
@@ -501,7 +503,7 @@ function SectionProducts({ resume, styles, lang }: { resume: ResolvedResume; sty
 function SectionReferences({ resume, styles, lang }: { resume: ResolvedResume; styles: ReturnType<typeof createStyles>; lang: Language }) {
   if (!resume.references.length) return null;
   return (
-    <View>
+    <View wrap={false}>
       <Text style={styles.sectionTitle}>{getSectionLabel('references', lang)}</Text>
       <View style={styles.refGrid}>
         {resume.references.map((ref) => (
