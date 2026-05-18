@@ -2,6 +2,8 @@
 
 export interface Env {
   RESUME_KV: KVNamespace;
+  /** OIDC sub claim of the administrator. When set, only this user may modify settings. */
+  ADMIN_SUB?: string;
 }
 
 // ---- Response helpers ----
@@ -36,12 +38,30 @@ interface AuthSettings {
   authority: string;
   redirectUri: string;
   scopes: string[];
+  adminRoleClaim?: string;
+  adminRoleValue?: string;
 }
 
 interface AppSettings {
   auth: AuthSettings;
   translation: { deeplApiKey: string };
   ai: { provider: string; apiKey: string; model: string };
+}
+
+// ---- SSRF prevention ----
+
+const PRIVATE_IP_RE =
+  /^(localhost|127\.|0\.|10\.|172\.(1[6-9]|2\d|3[01])\.|192\.168\.|::1|fc00:|fe80:)/i;
+
+function assertSafeUrl(url: string): void {
+  let parsed: URL;
+  try {
+    parsed = new URL(url);
+  } catch {
+    throw new Error('Invalid URL');
+  }
+  if (parsed.protocol !== 'https:') throw new Error('URL must use HTTPS');
+  if (PRIVATE_IP_RE.test(parsed.hostname)) throw new Error('URL must not point to a private or loopback address');
 }
 
 // ---- JWT / JWKS verification (Web Crypto API — Cloudflare Workers compatible) ----
@@ -125,12 +145,10 @@ async function verifyJwt(token: string, authority: string, clientId: string): Pr
   const now = Math.floor(Date.now() / 1000);
   if (claims.exp !== undefined && claims.exp < now) return null;
 
-  // Issuer check — normalize both sides (strip trailing slashes)
-  if (claims.iss) {
-    const tokenIss = claims.iss.replace(/\/$/, '');
-    const expectedIss = authority.replace(/\/$/, '');
-    if (tokenIss !== expectedIss) return null;
-  }
+  // Issuer check — iss is required; reject tokens that omit it (RFC 7519 §4.1.1)
+  const tokenIss = (claims.iss ?? '').replace(/\/$/, '');
+  const expectedIss = authority.replace(/\/$/, '');
+  if (!tokenIss || tokenIss !== expectedIss) return null;
 
   // Audience check — we validate using id_token (aud = clientId per OIDC spec).
   if (claims.aud !== undefined) {
@@ -138,12 +156,22 @@ async function verifyJwt(token: string, authority: string, clientId: string): Pr
     if (!aud.includes(clientId)) return null;
   }
 
-  // Fetch JWKS via discovery
+  // Fetch JWKS via discovery — validate authority and jwks_uri to prevent SSRF
   const base = authority.replace(/\/$/, '');
+  try {
+    assertSafeUrl(base);
+  } catch {
+    return null;
+  }
   const discoveryRes = await fetch(`${base}/.well-known/openid-configuration`);
   if (!discoveryRes.ok) return null;
   const oidcConfig = (await discoveryRes.json()) as OidcConfig;
 
+  try {
+    assertSafeUrl(oidcConfig.jwks_uri);
+  } catch {
+    return null;
+  }
   const jwksRes = await fetch(oidcConfig.jwks_uri);
   if (!jwksRes.ok) return null;
   const jwks = (await jwksRes.json()) as { keys: JwkKey[] };
@@ -180,6 +208,21 @@ async function verifyJwt(token: string, authority: string, clientId: string): Pr
 }
 
 /**
+ * Decode the JWT payload (no signature check) and return the raw sub claim.
+ * Only call this after the token has already been verified by authGuard.
+ */
+export function getSubFromToken(token: string): string | null {
+  try {
+    const parts = token.split('.');
+    if (parts.length !== 3) return null;
+    const claims = jsonDecode(parts[1]) as JwtClaims;
+    return claims.sub ?? null;
+  } catch {
+    return null;
+  }
+}
+
+/**
  * Deterministically map a sub claim to a KV-safe userId string.
  * SHA-256 hex — same algorithm as the Express backend's subToUserId().
  */
@@ -190,15 +233,20 @@ async function subToUserId(sub: string): Promise<string> {
     .join('');
 }
 
+export interface AuthContext {
+  userId: string;
+  isAdmin: boolean;
+}
+
 /**
  * Auth guard for Cloudflare Workers route handlers.
  *
  * Returns:
  *   - A Response (4xx/5xx) if the request is denied — callers must return it immediately.
- *   - A string userId (SHA-256 hex of the sub claim) when auth is enabled and the token is valid.
+ *   - An AuthContext { userId, isAdmin } when auth is enabled and the token is valid.
  *   - null when auth is disabled (single-user / initial-setup mode).
  */
-export async function authGuard(request: Request, env: Env): Promise<Response | string | null> {
+export async function authGuard(request: Request, env: Env): Promise<Response | AuthContext | null> {
   let settings: AppSettings;
   try {
     const raw = await env.RESUME_KV.get('settings');
@@ -221,7 +269,25 @@ export async function authGuard(request: Request, env: Env): Promise<Response | 
   try {
     const sub = await verifyJwt(token, settings.auth.authority, settings.auth.clientId);
     if (!sub) return err('Invalid or expired token', 401);
-    return await subToUserId(sub);
+
+    // Determine admin status via role claim or ADMIN_SUB bootstrap fallback.
+    // The token has already been fully verified above — safe to read payload claims.
+    let isAdmin = false;
+    if (settings.auth.adminRoleClaim && settings.auth.adminRoleValue) {
+      try {
+        const parts = token.split('.');
+        const payload = JSON.parse(new TextDecoder().decode(base64UrlDecodeToBuffer(parts[1]))) as Record<string, unknown>;
+        const rawClaim = payload[settings.auth.adminRoleClaim];
+        isAdmin = Array.isArray(rawClaim)
+          ? rawClaim.includes(settings.auth.adminRoleValue)
+          : rawClaim !== null && typeof rawClaim === 'object'
+            ? Object.prototype.hasOwnProperty.call(rawClaim, settings.auth.adminRoleValue)
+            : rawClaim === settings.auth.adminRoleValue;
+      } catch { /* isAdmin stays false */ }
+    }
+    if (!isAdmin && env.ADMIN_SUB && sub === env.ADMIN_SUB) isAdmin = true;
+
+    return { userId: await subToUserId(sub), isAdmin };
   } catch {
     // Any unexpected error during validation → deny access (fail closed)
     return err('Token validation failed', 401);

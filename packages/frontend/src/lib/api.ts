@@ -17,6 +17,7 @@ export interface KeysConfigured {
 export interface SettingsResponse {
   settings: AppSettings;
   keysConfigured: KeysConfigured;
+  isAdmin: boolean;
 }
 
 const API_BASE = '/api';
@@ -144,11 +145,12 @@ async function requestSettingsRaw(url: string, options?: RequestInit): Promise<S
   if (_authToken) headers.Authorization = `Bearer ${_authToken}`;
   const res = await fetch(`${API_BASE}${url}`, { ...options, headers: { ...headers, ...(options?.headers as Record<string, string> | undefined) } });
   if (res.status === 401) throw new AuthExpiredError();
-  const json = (await res.json()) as ApiResponse<AppSettings> & { keysConfigured?: KeysConfigured };
+  const json = (await res.json()) as ApiResponse<AppSettings> & { keysConfigured?: KeysConfigured; isAdmin?: boolean };
   if (!json.success) throw new Error(json.error || 'API request failed');
   return {
     settings: json.data as AppSettings,
     keysConfigured: json.keysConfigured ?? { deeplApiKey: false, aiApiKey: false, s3SecretKey: false, sharePointClientSecret: false },
+    isAdmin: json.isAdmin ?? false,
   };
 }
 

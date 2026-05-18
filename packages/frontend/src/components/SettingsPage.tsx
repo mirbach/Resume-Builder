@@ -6,6 +6,7 @@ import { Save, Loader2, ArrowLeft, CheckCircle } from 'lucide-react';
 
 interface Props {
   onClose: () => void;
+  isAdmin?: boolean;
 }
 
 const AI_PROVIDERS: { value: AiProvider; label: string; defaultModel: string; keyPlaceholder: string; docsUrl: string }[] = [
@@ -21,7 +22,7 @@ const PROVIDERS: { value: AuthProvider; label: string }[] = [
   { value: 'generic-oidc', label: 'Generic OIDC' },
 ];
 
-export default function SettingsPage({ onClose }: Props) {
+export default function SettingsPage({ onClose, isAdmin = true }: Props) {
   const [settings, setSettings] = useState<AppSettings | null>(null);
   const [keysConfigured, setKeysConfigured] = useState<KeysConfigured>({ deeplApiKey: false, aiApiKey: false, s3SecretKey: false, sharePointClientSecret: false });
   const [saving, setSaving] = useState(false);
@@ -59,6 +60,20 @@ export default function SettingsPage({ onClose }: Props) {
     return (
       <div className="flex h-full items-center justify-center">
         <Loader2 className="animate-spin text-blue-600" size={24} />
+      </div>
+    );
+  }
+
+  if (!isAdmin) {
+    return (
+      <div className="mx-auto max-w-2xl p-6 space-y-6">
+        <div className="flex items-center gap-3">
+          <button aria-label="Back" onClick={onClose} className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200">
+            <ArrowLeft size={20} />
+          </button>
+          <h2 className="text-xl font-bold text-gray-900 dark:text-white">Settings</h2>
+        </div>
+        <p className="text-sm text-gray-500 dark:text-gray-400">You don't have permission to edit settings. Contact an administrator.</p>
       </div>
     );
   }
@@ -160,6 +175,24 @@ export default function SettingsPage({ onClose }: Props) {
                   updateAuth({ scopes: e.target.value.split(',').map((s) => s.trim()).filter(Boolean) })
                 }
                 placeholder="openid, profile, email"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Admin role claim <span className="font-normal text-gray-400">(JWT claim name that identifies admins)</span></label>
+              <input
+                className={inputClasses}
+                value={auth.adminRoleClaim ?? ''}
+                onChange={(e) => updateAuth({ adminRoleClaim: e.target.value })}
+                placeholder="roles"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Admin role value <span className="font-normal text-gray-400">(expected value of the claim above)</span></label>
+              <input
+                className={inputClasses}
+                value={auth.adminRoleValue ?? ''}
+                onChange={(e) => updateAuth({ adminRoleValue: e.target.value })}
+                placeholder="resume-admin"
               />
             </div>
           </>

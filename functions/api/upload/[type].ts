@@ -40,14 +40,14 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env, params }
     if (guard) {
       // Delete any previous upload for this type (different extension) for this user
       for (const e of KNOWN_EXTS) {
-        await env.RESUME_KV.delete(`upload:${guard}:${type}${e}`);
+        await env.RESUME_KV.delete(`upload:${guard.userId}:${type}${e}`);
       }
 
       const base64 = arrayBufferToBase64(buffer);
       const dataUrl = `data:${file.type};base64,${base64}`;
-      await env.RESUME_KV.put(`upload:${guard}:${filename}`, dataUrl);
+      await env.RESUME_KV.put(`upload:${guard.userId}:${filename}`, dataUrl);
 
-      const path = `/api/uploads/${guard}/${filename}`;
+      const path = `/api/uploads/${guard.userId}/${filename}`;
       return new Response(JSON.stringify({ success: true, data: { path, filename } }), {
         status: 200,
         headers: { 'Content-Type': 'application/json' },

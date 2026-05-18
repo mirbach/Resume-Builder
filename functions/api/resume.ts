@@ -6,7 +6,7 @@ export const onRequestGet: PagesFunction<Env> = async ({ request, env }) => {
   if (guard instanceof Response) return guard;
 
   try {
-    const key = guard ? `resume:${guard}` : 'resume';
+    const key = guard ? `resume:${guard.userId}` : 'resume';
     const raw = await env.RESUME_KV.get(key);
     const data = raw ? JSON.parse(raw) : DEFAULT_RESUME;
     return ok(data);
@@ -22,7 +22,7 @@ export const onRequestPut: PagesFunction<Env> = async ({ request, env }) => {
 
   try {
     const data = await request.json();
-    const key = guard ? `resume:${guard}` : 'resume';
+    const key = guard ? `resume:${guard.userId}` : 'resume';
     await env.RESUME_KV.put(key, JSON.stringify(data));
     return ok(data);
   } catch {

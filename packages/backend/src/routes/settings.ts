@@ -25,7 +25,8 @@ const DEFAULTS: AppSettings = {
 
 // GET /api/settings
 // Returns settings with secret values stripped — only indicates whether each is configured.
-router.get('/', async (_req: Request, res: Response) => {
+// Also returns isAdmin based on the authenticated user's role claim (or ADMIN_SUB fallback).
+router.get('/', async (req: Request, res: Response) => {
   try {
     const settings = await readJson<AppSettings>('settings.json').catch(() => DEFAULTS);
 
@@ -48,7 +49,7 @@ router.get('/', async (_req: Request, res: Response) => {
       },
     };
 
-    res.json({ success: true, data: safe, keysConfigured });
+    res.json({ success: true, data: safe, keysConfigured, isAdmin: req.user?.isAdmin ?? false });
   } catch {
     res.status(500).json({ success: false, error: 'Failed to load settings' });
   }
@@ -57,6 +58,13 @@ router.get('/', async (_req: Request, res: Response) => {
 // PUT /api/settings
 // Merges with existing — secrets are only overwritten if a non-empty value is provided.
 router.put('/', async (req: Request, res: Response) => {
+  // When auth is enabled, only admins may change settings.
+  // In single-user mode (auth disabled) req.user is absent and the check is skipped.
+  if (req.user && !req.user.isAdmin) {
+    res.status(403).json({ success: false, error: 'Forbidden: admin access required' });
+    return;
+  }
+
   try {
     const incoming = req.body as AppSettings;
     const existing = await readJson<AppSettings>('settings.json').catch(() => DEFAULTS);

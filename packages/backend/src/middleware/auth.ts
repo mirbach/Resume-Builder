@@ -100,10 +100,23 @@ export async function authMiddleware(req: Request, res: Response, next: NextFunc
       ...(clientId ? { audience: clientId } : {}),
     });
 
+    const { adminRoleClaim, adminRoleValue } = settings.auth;
+    let roleMatch = false;
+    if (adminRoleClaim && adminRoleValue) {
+      const rawClaim = payload[adminRoleClaim];
+      roleMatch = Array.isArray(rawClaim)
+        ? rawClaim.includes(adminRoleValue)
+        : rawClaim !== null && typeof rawClaim === 'object'
+          ? Object.prototype.hasOwnProperty.call(rawClaim, adminRoleValue)
+          : rawClaim === adminRoleValue;
+    }
+    const subMatch = !!process.env.ADMIN_SUB && payload.sub === process.env.ADMIN_SUB;
+
     req.user = {
       sub: payload.sub as string,
       email: payload['email'] as string | undefined,
       name: (payload['name'] ?? payload['preferred_username']) as string | undefined,
+      isAdmin: roleMatch || subMatch,
     };
 
     next();

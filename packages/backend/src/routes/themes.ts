@@ -76,17 +76,21 @@ router.get('/:name', async (req: Request, res: Response) => {
 });
 
 // POST /api/themes - create a new theme
+// Admins write to the global scope; regular users write to their personal scope.
 router.post('/', async (req: Request, res: Response) => {
   try {
     const theme = req.body as ResumeTheme;
     const filename = sanitizeFilename(theme.name.toLowerCase().replace(/\s+/g, '-'));
     const provider = await getProvider();
 
-    if (req.user) {
+    if (req.user?.isAdmin) {
+      await provider.writeJson(`themes/${filename}.json`, theme);
+    } else if (req.user) {
       await ensureUserData(provider, req.user.sub);
       const userId = subToUserId(req.user.sub);
       await provider.writeJson(`users/${userId}/themes/${filename}.json`, theme);
     } else {
+      // Single-user mode (auth disabled) — write to global scope
       await provider.writeJson(`themes/${filename}.json`, theme);
     }
 
@@ -97,17 +101,28 @@ router.post('/', async (req: Request, res: Response) => {
 });
 
 // PUT /api/themes/:name - update a theme
+// Admins may update global themes; regular users may only update their own personal themes.
 router.put('/:name', async (req: Request, res: Response) => {
   try {
     const name = sanitizeFilename(getParam(req.params, 'name'));
     const theme = req.body as ResumeTheme;
     const provider = await getProvider();
 
-    if (req.user) {
+    if (req.user?.isAdmin) {
+      // Admin: write to global scope
+      await provider.writeJson(`themes/${name}.json`, theme);
+    } else if (req.user) {
+      // Regular user: check they are not targeting a global theme
+      const isGlobal = await provider.keyExists(`themes/${name}.json`);
+      if (isGlobal) {
+        res.status(403).json({ success: false, error: 'Forbidden: only admins can edit company themes' });
+        return;
+      }
       await ensureUserData(provider, req.user.sub);
       const userId = subToUserId(req.user.sub);
       await provider.writeJson(`users/${userId}/themes/${name}.json`, theme);
     } else {
+      // Single-user mode
       await provider.writeJson(`themes/${name}.json`, theme);
     }
 

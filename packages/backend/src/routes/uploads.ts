@@ -92,6 +92,12 @@ router.get('/:userId/:filename', async (req: Request, res: Response) => {
     return;
   }
 
+  // Object-level authorization: authenticated users may only fetch their own uploads.
+  if (req.user && subToUserId(req.user.sub) !== userId) {
+    res.status(403).json({ success: false, error: 'Forbidden' });
+    return;
+  }
+
   try {
     const provider = await getProvider();
     const { buffer, mimeType } = await provider.readBinary(`users/${userId}/uploads/${filename}`);

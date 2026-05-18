@@ -1,4 +1,4 @@
-import { type Env, err } from '../../../_shared/helpers';
+import { type Env, err, authGuard } from '../../../_shared/helpers';
 
 const MIME_FROM_EXT: Record<string, string> = {
   jpg: 'image/jpeg',
@@ -9,11 +9,19 @@ const MIME_FROM_EXT: Record<string, string> = {
 };
 
 // GET /api/uploads/:userId/:filename — serve a user's uploaded file (multi-user mode)
-export const onRequestGet: PagesFunction<Env> = async ({ env, params }) => {
+export const onRequestGet: PagesFunction<Env> = async ({ request, env, params }) => {
+  // Require authentication — this endpoint only exists in multi-user (auth-enabled) mode
+  const guard = await authGuard(request, env);
+  if (guard instanceof Response) return guard;
+
   // Only allow hex characters for userId (SHA-256 hash)
   const rawUserId = Array.isArray(params.userId) ? params.userId[0] : params.userId;
   const userId = rawUserId.replace(/[^a-f0-9]/g, '');
   if (!userId) return err('Invalid user', 400);
+
+  // Object-level authorization: the authenticated user may only fetch their own uploads.
+  // guard.userId is the SHA-256 userId when auth is enabled; guard is null when disabled.
+  if (guard !== null && guard.userId !== userId) return err('Forbidden', 403);
 
   const rawFilename = Array.isArray(params.filename) ? params.filename[0] : params.filename;
   const filename = rawFilename.replace(/[^a-zA-Z0-9._-]/g, '');

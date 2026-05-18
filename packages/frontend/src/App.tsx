@@ -65,6 +65,7 @@ export default function App() {
     return storedMode === 'editor' ? 'editor' : 'preview';
   });
   const [appSettings, setAppSettings] = useState<AppSettings | null>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
   const [authLoading, setAuthLoading] = useState(false);
   const [authError, setAuthError] = useState<string | null>(null);
   const [currentUser, setCurrentUser] = useState<{ name?: string; email?: string } | null>(null);
@@ -90,9 +91,12 @@ export default function App() {
   // Load initial data
   useEffect(() => {
     async function init() {
+      // Hoisted so the catch block can redirect to sign-in on AuthExpiredError.
+      let settings: AppSettings | null = null;
+      let apiToken: string | null = null;
       try {
         // Restore any stored token BEFORE making API calls so auth headers are present
-        const apiToken = getApiToken();
+        apiToken = getApiToken();
         if (apiToken) {
           setAuthToken(apiToken);
           setCurrentUser(getUser());
@@ -100,8 +104,9 @@ export default function App() {
 
         // Always load settings first (settings endpoint is public)
         const settingsResp = await getSettings().catch(() => null);
-        const settings = settingsResp?.settings ?? null;
+        settings = settingsResp?.settings ?? null;
         setAppSettings(settings);
+        setIsAdmin(settingsResp?.isAdmin ?? false);
 
         // If a 401 was caught mid-session, the token was cleared and a reload was triggered.
         // Pick that up here and redirect to sign-in before doing anything else.
@@ -132,6 +137,14 @@ export default function App() {
           return;
         }
 
+        // Auth is enabled but there is no token — redirect to sign-in rather than
+        // hitting the API and receiving a 401.
+        if (settings?.auth.enabled && !apiToken) {
+          const url = await buildAuthUrl(settings.auth);
+          window.location.href = url;
+          return;
+        }
+
         const resume = await getResume();
         setResumeData(resume);
 
@@ -159,6 +172,16 @@ export default function App() {
           setMode('editor');
         }
       } catch (err) {
+        // A 401 during initial load (clock skew, token revocation) should redirect
+        // to sign-in rather than show a generic error screen.
+        if (err instanceof AuthExpiredError && settings?.auth.enabled) {
+          clearToken();
+          setAuthToken(null);
+          try {
+            window.location.href = await buildAuthUrl(settings.auth);
+            return;
+          } catch { /* fall through to load error if OIDC discovery itself fails */ }
+        }
         setLoadError(err instanceof Error ? err.message : 'Failed to load app data');
       } finally {
         setLoading(false);
@@ -220,6 +243,9 @@ export default function App() {
         setAuthToken(idToken ?? accessToken);
         setCurrentUser(getUser());
         window.history.replaceState({}, '', window.location.pathname);
+        // Refresh isAdmin now that we have a valid token
+        const settingsResp = await getSettings().catch(() => null);
+        setIsAdmin(settingsResp?.isAdmin ?? false);
         // Now that we have a valid token, load the resume + theme data
         await loadResumeData();
         setMode('editor');
@@ -463,12 +489,14 @@ export default function App() {
         </div>
         <div className="flex items-center gap-3">
           <ThemeSelector value={themeName} onChange={setThemeName} refreshKey={themeListKey} />
-          <button
-            onClick={() => setShowThemeEditor(true)}
-            className="flex items-center gap-1 rounded-md border border-gray-300 dark:border-gray-600 px-2 py-1.5 text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
-          >
-            <Palette size={14} /> Company
-          </button>
+          {isAdmin && (
+            <button
+              onClick={() => setShowThemeEditor(true)}
+              className="flex items-center gap-1 rounded-md border border-gray-300 dark:border-gray-600 px-2 py-1.5 text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
+            >
+              <Palette size={14} /> Company
+            </button>
+          )}
           <LanguageSwitcher language={language} onChange={setLanguage} />
           <PrintButton />
           <PdfExportButton resume={resolved} theme={theme} language={language} />
@@ -518,13 +546,15 @@ export default function App() {
           >
             <HelpCircle size={16} />
           </button>
-          <button
-            onClick={() => setShowSettings(true)}
-            aria-label="Settings"
-            className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
-          >
-            <Settings size={16} />
-          </button>
+          {isAdmin && (
+            <button
+              onClick={() => setShowSettings(true)}
+              aria-label="Settings"
+              className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
+            >
+              <Settings size={16} />
+            </button>
+          )}
           {appSettings?.auth.enabled && (
             <div className="flex items-center gap-2">
               {currentUser && (
@@ -554,7 +584,7 @@ export default function App() {
         </div>
       ) : showSettings ? (
         <div className="flex-1 overflow-y-auto bg-gray-50 dark:bg-gray-900">
-          <SettingsPage onClose={() => setShowSettings(false)} />
+          <SettingsPage onClose={() => setShowSettings(false)} isAdmin={isAdmin} />
         </div>
       ) : (
         <>

@@ -185,6 +185,8 @@ export interface AuthSettings {
   authority: string;
   redirectUri: string;
   scopes: string[];
+  adminRoleClaim?: string;
+  adminRoleValue?: string;
 }
 
 export interface TranslationSettings {

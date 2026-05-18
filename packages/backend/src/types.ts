@@ -6,6 +6,7 @@ export interface AuthUser {
   sub: string;
   email?: string;
   name?: string;
+  isAdmin: boolean;
 }
 
 declare global {
@@ -203,6 +204,10 @@ export interface AuthSettings {
   authority: string;
   redirectUri: string;
   scopes: string[];
+  /** JWT claim name that carries role information (e.g. "roles", "groups"). */
+  adminRoleClaim?: string;
+  /** Value within that claim that grants admin access (e.g. "resume-admin"). */
+  adminRoleValue?: string;
 }
 
 export interface TranslationSettings {

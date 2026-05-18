@@ -30,7 +30,7 @@ export const onRequestGet: PagesFunction<Env> = async ({ request, env }) => {
     }
 
     // List user's personal themes (prefix: 'theme:{userId}:')
-    const userPrefix = `theme:${guard}:`;
+    const userPrefix = `theme:${guard.userId}:`;
     const userListed = await env.RESUME_KV.list({ prefix: userPrefix });
     const userThemes = await Promise.all(
       userListed.keys.map(async ({ name: key }) => {
@@ -55,7 +55,7 @@ export const onRequestGet: PagesFunction<Env> = async ({ request, env }) => {
   }
 };
 
-// POST /api/themes — create a new theme in user's personal collection
+// POST /api/themes — admins write to global scope; regular users write to personal scope
 export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
   const guard = await authGuard(request, env);
   if (guard instanceof Response) return guard;
@@ -65,7 +65,16 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
     const filename = sanitizeFilename(theme.name.toLowerCase().replace(/\s+/g, '-'));
     if (!filename) return err('Invalid theme name', 400);
 
-    const key = guard ? `theme:${guard}:${filename}` : `theme:${filename}`;
+    let key: string;
+    if (!guard) {
+      // Auth disabled — single-user mode, write to global scope
+      key = `theme:${filename}`;
+    } else if (guard.isAdmin) {
+      key = `theme:${filename}`;
+    } else {
+      key = `theme:${guard.userId}:${filename}`;
+    }
+
     await env.RESUME_KV.put(key, JSON.stringify(theme));
     return new Response(JSON.stringify({ success: true, data: theme }), {
       status: 201,

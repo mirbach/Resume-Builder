@@ -1,4 +1,4 @@
-import { type Env, ok, err, authGuard, DEFAULT_SETTINGS } from '../_shared/helpers';
+import { type Env, json, err, authGuard, DEFAULT_SETTINGS } from '../_shared/helpers';
 
 interface AppSettings {
   auth: { enabled: boolean; provider: string; clientId: string; authority: string; redirectUri: string; scopes: string[] };
@@ -7,9 +7,12 @@ interface AppSettings {
 }
 
 // GET /api/settings
-// Returns settings with API key values stripped — only indicates whether each key is configured.
+// Public endpoint (needed for initial setup). Optionally checks the token to return isAdmin.
 export const onRequestGet: PagesFunction<Env> = async ({ request, env }) => {
-  // Settings endpoint intentionally does not require auth (needed for initial setup)
+  // Attempt auth to determine isAdmin — but never block this endpoint on auth failure.
+  const guardResult = await authGuard(request, env);
+  const isAdmin = guardResult instanceof Response ? false : (guardResult?.isAdmin ?? false);
+
   try {
     const raw = await env.RESUME_KV.get('settings');
     const data: AppSettings = raw ? JSON.parse(raw) : DEFAULT_SETTINGS;
@@ -26,9 +29,9 @@ export const onRequestGet: PagesFunction<Env> = async ({ request, env }) => {
       ai: { ...data.ai, apiKey: '' },
     };
 
-    return ok(safe, keysConfigured);
+    return json({ success: true, data: safe, keysConfigured, isAdmin });
   } catch {
-    return ok(DEFAULT_SETTINGS);
+    return json({ success: true, data: DEFAULT_SETTINGS, keysConfigured: { deeplApiKey: false, aiApiKey: false }, isAdmin: false });
   }
 };
 
@@ -37,6 +40,11 @@ export const onRequestGet: PagesFunction<Env> = async ({ request, env }) => {
 export const onRequestPut: PagesFunction<Env> = async ({ request, env }) => {
   const guard = await authGuard(request, env);
   if (guard instanceof Response) return guard;
+
+  // When auth is enabled, only admins may modify settings.
+  if (guard !== null && !guard.isAdmin) {
+    return err('Forbidden: admin access required', 403);
+  }
 
   try {
     const incoming = (await request.json()) as AppSettings;
