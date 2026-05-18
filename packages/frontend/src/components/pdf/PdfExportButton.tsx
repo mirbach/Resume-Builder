@@ -46,11 +46,12 @@ export default function PdfExportButton({ resume, theme, language }: Props) {
       const doc = <ResumePdfDocument resume={resolvedResume} theme={resolvedTheme} lang={language} />;
       const blob = await pdf(doc).toBlob();
       const url = URL.createObjectURL(blob);
+      const safeName = resume.personal.name.replace(/\s+/g, '').replace(/[^a-zA-Z0-9-]/g, '');
+      const safeTheme = theme.name.replace(/\s+/g, '').replace(/[^a-zA-Z0-9-]/g, '');
+      const lang = language === 'de' ? 'DE' : 'EN';
       const a = document.createElement('a');
       a.href = url;
-      a.download = language === 'de'
-        ? 'CV-AndreasMirbach-DE.pdf'
-        : 'CV-AndreasMirbach-EN.pdf';
+      a.download = `CV-${safeName}-${safeTheme}-${lang}.pdf`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
