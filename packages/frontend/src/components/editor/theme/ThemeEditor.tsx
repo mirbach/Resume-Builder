@@ -4,6 +4,7 @@ import { getTheme, saveTheme, createTheme, deleteTheme, getThemes, uploadFile } 
 import type { ThemeListItem } from '../../../lib/types';
 import { Save, Plus, Trash2, GripVertical, Loader2, Upload, X, RotateCcw } from 'lucide-react';
 import { lightTint } from '../../../lib/colorUtils';
+import { useAuthedImageSrc } from '../../../lib/useAuthedImageSrc';
 
 interface Props {
   currentTheme: string;
@@ -55,6 +56,7 @@ export default function ThemeEditor({ currentTheme, onThemeChange, onClose }: Pr
   const [showCreate, setShowCreate] = useState(false);
   const [logoUploading, setLogoUploading] = useState(false);
   const logoInputRef = useRef<HTMLInputElement>(null);
+  const logoPreviewSrc = useAuthedImageSrc(theme.logo);
 
   const inputClasses = 'w-full rounded-md border border-gray-300 px-3 py-1.5 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none';
 
@@ -257,7 +259,7 @@ export default function ThemeEditor({ currentTheme, onThemeChange, onClose }: Pr
                   {theme.logo ? (
                     <div className="flex items-center gap-2">
                       <img
-                        src={theme.logo}
+                        src={logoPreviewSrc}
                         alt="Company logo"
                         className="h-10 w-auto max-w-[120px] object-contain rounded border border-gray-200 p-1"
                       />

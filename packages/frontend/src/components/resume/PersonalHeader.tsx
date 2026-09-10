@@ -1,5 +1,6 @@
 import type { ResolvedPersonalInfo, ResumeTheme } from '../../lib/types';
 import { Mail, Phone, MapPin, Briefcase, GitFork, Globe } from 'lucide-react';
+import { useAuthedImageSrc } from '../../lib/useAuthedImageSrc';
 
 interface Props {
   data: ResolvedPersonalInfo;
@@ -8,6 +9,8 @@ interface Props {
 
 export default function PersonalHeader({ data, theme }: Props) {
   const showPhoto = theme.layout.showPhoto && data.photo;
+  const photoSrc = useAuthedImageSrc(data.photo);
+  const logoSrc = useAuthedImageSrc(theme.logo);
 
   return (
     <div
@@ -15,9 +18,9 @@ export default function PersonalHeader({ data, theme }: Props) {
       style={{ borderColor: theme.colors.primary }}
     >
       <div className="flex items-start gap-5">
-        {showPhoto && (
+        {showPhoto && photoSrc && (
           <img
-            src={data.photo}
+            src={photoSrc}
             alt={data.name}
             className="h-24 w-24 rounded-full object-cover border-2 shrink-0"
             style={{ borderColor: theme.colors.primary }}
@@ -106,10 +109,10 @@ export default function PersonalHeader({ data, theme }: Props) {
             )}
           </div>
         </div>
-        {theme.logo && (
+        {theme.logo && logoSrc && (
           <div className="flex flex-col items-end shrink-0 gap-1 min-w-[80px]">
             <img
-              src={theme.logo}
+              src={logoSrc}
               alt={theme.companyName || 'Company logo'}
               className="h-12 w-auto object-contain"
             />

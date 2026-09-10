@@ -3,23 +3,12 @@ import { pdf } from '@react-pdf/renderer';
 import type { ResolvedResume, ResumeTheme, Language } from '../../lib/types';
 import ResumePdfDocument from './ResumePdfDocument';
 import { FileDown, Loader2, AlertCircle } from 'lucide-react';
+import { fetchAsDataUrl } from '../../lib/fileUtils';
 
 interface Props {
   resume: ResolvedResume;
   theme: ResumeTheme;
   language: Language;
-}
-
-async function toDataUrl(src: string): Promise<string> {
-  const url = src.startsWith('http') ? src : `${window.location.origin}${src}`;
-  const res = await fetch(url);
-  const blob = await res.blob();
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => resolve(reader.result as string);
-    reader.onerror = reject;
-    reader.readAsDataURL(blob);
-  });
 }
 
 export default function PdfExportButton({ resume, theme, language }: Props) {
@@ -35,11 +24,11 @@ export default function PdfExportButton({ resume, theme, language }: Props) {
       const resolvedTheme = { ...theme };
 
       if (resolvedResume.personal.photo) {
-        try { resolvedResume.personal.photo = await toDataUrl(resolvedResume.personal.photo); }
+        try { resolvedResume.personal.photo = await fetchAsDataUrl(resolvedResume.personal.photo); }
         catch { /* skip if fetch fails */ }
       }
       if (resolvedTheme.logo) {
-        try { resolvedTheme.logo = await toDataUrl(resolvedTheme.logo); }
+        try { resolvedTheme.logo = await fetchAsDataUrl(resolvedTheme.logo); }
         catch { /* skip if fetch fails */ }
       }
 

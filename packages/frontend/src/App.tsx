@@ -9,6 +9,7 @@ import LanguageSwitcher from './components/toolbar/LanguageSwitcher';
 import ThemeSelector from './components/toolbar/ThemeSelector';
 import ThemeEditor from './components/editor/theme/ThemeEditor';
 import PdfExportButton from './components/pdf/PdfExportButton';
+import OdtExportButton from './components/odt/OdtExportButton';
 import PrintButton from './components/pdf/PrintButton';
 import SettingsPage from './components/SettingsPage';
 import HelpPage from './components/HelpPage';
@@ -388,6 +389,7 @@ export default function App() {
             <LanguageSwitcher language={language} onChange={setLanguage} />
             <PrintButton />
             <PdfExportButton resume={resolved} theme={theme} language={language} />
+            <OdtExportButton resume={resolved} theme={theme} language={language} />
             <button
               aria-label="Toggle dark mode"
               onClick={toggleDarkMode}
@@ -500,6 +502,7 @@ export default function App() {
           <LanguageSwitcher language={language} onChange={setLanguage} />
           <PrintButton />
           <PdfExportButton resume={resolved} theme={theme} language={language} />
+          <OdtExportButton resume={resolved} theme={theme} language={language} />
           <button
             onClick={() => resumeData && exportResumeJson(resumeData)}
             aria-label="Export resume JSON"

@@ -28,6 +28,10 @@ export function setAuthToken(token: string | null) {
   _authToken = token;
 }
 
+export function getAuthToken(): string | null {
+  return _authToken;
+}
+
 /** Thrown when the server responds with 401 — the session token has expired. */
 export class AuthExpiredError extends Error {
   constructor(message = 'Session expired') {

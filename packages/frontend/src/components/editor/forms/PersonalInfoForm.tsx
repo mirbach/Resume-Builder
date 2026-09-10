@@ -2,6 +2,7 @@ import type { PersonalInfo } from '../../../lib/types';
 import { uploadFile } from '../../../lib/api';
 import BilingualField from '../BilingualField';
 import { Upload, X } from 'lucide-react';
+import { useAuthedImageSrc } from '../../../lib/useAuthedImageSrc';
 
 interface Props {
   data: PersonalInfo;
@@ -11,6 +12,7 @@ interface Props {
 export default function PersonalInfoForm({ data, onChange }: Props) {
   const inputClasses =
     'w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none';
+  const photoPreviewSrc = useAuthedImageSrc(data.photo);
 
   async function handlePhotoUpload(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
@@ -29,7 +31,7 @@ export default function PersonalInfoForm({ data, onChange }: Props) {
           {data.photo ? (
             <div className="relative">
               <img
-                src={data.photo}
+                src={photoPreviewSrc}
                 alt="Profile"
                 className="h-24 w-24 rounded-full object-cover border-2 border-gray-200"
               />
